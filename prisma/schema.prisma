@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Rol {
+  ESTUDIANTE
+  DOCENTE
+  ADMIN
+}
+
+model Usuario {
+  id         Int         @id @default(autoincrement())
+  usuario    String      @unique
+  nombre     String
+  apellido   String
+  correo     String      @unique
+  clave      String
+  colegio    String?
+  rol        Rol         @default(ESTUDIANTE)
+  creadoEn   DateTime    @default(now())
+  respuestas Respuesta[]
+}
+
+model Area {
+  id        Int        @id @default(autoincrement())
+  nombre    String     @unique
+  preguntas Pregunta[]
+}
+
+model Pregunta {
+  id          Int              @id @default(autoincrement())
+  enunciado   String
+  explicacion String
+  areaId      Int
+  area        Area             @relation(fields: [areaId], references: [id])
+  opciones    Opcion[]
+  respuestas  Respuesta[]
+  delDia      PreguntaDelDia[]
+}
+
+model Opcion {
+  id         Int      @id @default(autoincrement())
+  texto      String
+  esCorrecta Boolean  @default(false)
+  preguntaId Int
+  pregunta   Pregunta @relation(fields: [preguntaId], references: [id])
+}
+
+model Respuesta {
+  id         Int      @id @default(autoincrement())
+  usuarioId  Int
+  preguntaId Int
+  opcionId   Int
+  acierto    Boolean
+  puntaje    Int
+  fecha      DateTime @default(now())
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+  pregunta   Pregunta @relation(fields: [preguntaId], references: [id])
+
+  @@unique([usuarioId, preguntaId])
+}
+
+model PreguntaDelDia {
+  fecha      DateTime @id @db.Date
+  preguntaId Int
+  pregunta   Pregunta @relation(fields: [preguntaId], references: [id])
+}
