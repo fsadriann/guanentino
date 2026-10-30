@@ -1,6 +1,7 @@
 import { prisma } from "../../../lib/prisma";
 import { exigirDocente } from "../../../lib/permisos";
 import Borrar from "./borrar";
+import Link from "next/link";
 
 export default async function Preguntas() {
     await exigirDocente();
@@ -37,11 +38,16 @@ export default async function Preguntas() {
                                 </td>
                                 <td className="p-2">{p._count.respuestas}</td>
                                 <td className="p-2">
-                                    {p._count.respuestas === 0 ? (
-                                        <Borrar preguntaId={p.id} />
-                                    ) : (
-                                        <span className="text-sm opacity-60">Ya respondida</span>
-                                    )}
+                                    <div className="flex gap-3">
+                                        <Link href={`/docente/preguntas/${p.id}`} className="text-sm text-blue-500 underline">
+                                            Editar
+                                        </Link>
+                                        {p._count.respuestas === 0 ? (
+                                            <Borrar preguntaId={p.id} />
+                                        ) : (
+                                            <span className="text-sm opacity-60">Ya respondida</span>
+                                        )}
+                                    </div>
                                 </td>
                             </tr>
                         ))}

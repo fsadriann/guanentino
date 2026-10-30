@@ -9,7 +9,11 @@ function fechaHoy() {
 
 export async function preguntaDelDia() {
     const fecha = fechaHoy();
-    const incluir = { pregunta: { include: { opciones: true, area: true } } };
+    const incluir = {
+        pregunta: {
+            include: { opciones: { orderBy: { id: "asc" } }, area: true },
+        },
+    };
 
     const existente = await prisma.preguntaDelDia.findUnique({
         where: { fecha },
