@@ -44,6 +44,7 @@ export default async function Perfil() {
             <nav className="mb-6 flex gap-4 text-blue-500 underline">
                 <Link href="/pregunta">Pregunta del día</Link>
                 <Link href="/ranking">Ranking</Link>
+                <Link href="/perfil/clave">Cambiar clave</Link>
                 {["DOCENTE", "ADMIN"].includes(usuario.rol) && (
                     <Link href="/docente">Panel docente</Link>
                 )}
