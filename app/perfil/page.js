@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { CircleCheck, Flame, Star, Trophy } from "lucide-react";
 import { signOut } from "../../auth";
 import { exigirSesion } from "../../lib/permisos";
 import { prisma } from "../../lib/prisma";
@@ -16,21 +17,30 @@ export default async function Perfil() {
     const esDocente = ["DOCENTE", "ADMIN"].includes(usuario.rol);
 
     const tarjetas = [
-        { emoji: "⭐", titulo: "Puntos", valor: stats.puntos, color: "text-amarillo-oscuro" },
         {
-            emoji: "🏆",
+            Icono: Star,
+            lleno: true,
+            titulo: "Puntos",
+            valor: stats.puntos,
+            color: "text-amarillo-oscuro",
+        },
+        {
+            Icono: Trophy,
+            lleno: false,
             titulo: "Posición",
             valor: stats.posicion ? "#" + stats.posicion : "-",
             color: "text-morado",
         },
         {
-            emoji: "🔥",
+            Icono: Flame,
+            lleno: true,
             titulo: "Racha",
             valor: stats.racha + (stats.racha === 1 ? " día" : " días"),
             color: "text-naranja-oscuro",
         },
         {
-            emoji: "✅",
+            Icono: CircleCheck,
+            lleno: false,
             titulo: "Aciertos",
             valor: stats.aciertos + " de " + stats.respondidas,
             color: "text-acierto-oscuro",
@@ -62,8 +72,13 @@ export default async function Perfil() {
             <div className="mb-6 grid grid-cols-2 gap-3">
                 {tarjetas.map((t) => (
                     <div key={t.titulo} className="tarjeta">
-                        <p className="text-2xl">{t.emoji}</p>
-                        <p className={"text-2xl font-extrabold " + t.color}>{t.valor}</p>
+                        <t.Icono
+                            size={28}
+                            strokeWidth={2.5}
+                            fill={t.lleno ? "currentColor" : "none"}
+                            className={t.color}
+                        />
+                        <p className={"mt-1 text-2xl font-extrabold " + t.color}>{t.valor}</p>
                         <p className="text-sm font-extrabold uppercase tracking-wide text-gris">
                             {t.titulo}
                         </p>

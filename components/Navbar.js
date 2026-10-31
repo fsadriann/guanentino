@@ -10,10 +10,10 @@ export default async function Navbar() {
 
     const enlaces = sesion
         ? [
-            ["/pregunta", "Preguntas", "📝"],
-            ["/ranking", "Ranking", "🏆"],
-            ["/perfil", "Perfil", "👤"],
-            ...(esDocente ? [["/docente", "Docente", "🧑‍🏫"]] : []),
+            ["/pregunta", "Preguntas", "preguntas"],
+            ["/ranking", "Ranking", "ranking"],
+            ["/perfil", "Perfil", "perfil"],
+            ...(esDocente ? [["/docente", "Docente", "docente"]] : []),
         ]
         : [
             ["/login", "Entrar"],

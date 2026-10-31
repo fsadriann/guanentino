@@ -31,17 +31,18 @@ export default async function Preguntas() {
                 <div className="animar-lista flex flex-col gap-3">
                     {preguntas.map((p) => {
                         const estilo = estiloArea(p.area.nombre);
+                        const Icono = estilo.Icono;
                         const resumen = p.enunciado.replace(/\s+/g, " ");
                         const respuestas = p._count.respuestas;
                         return (
                             <div key={p.id} className="tarjeta">
                                 <span
                                     className={
-                                        "inline-block rounded-full px-3 py-1 text-xs font-extrabold text-white " +
+                                        "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-extrabold text-white " +
                                         estilo.fondo
                                     }
                                 >
-                                    {estilo.emoji} {p.area.nombre}
+                                    <Icono size={14} strokeWidth={2.5} /> {p.area.nombre}
                                 </span>
                                 <p className="mt-2">
                                     {resumen.length > 110 ? resumen.slice(0, 110) + "..." : resumen}

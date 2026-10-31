@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Check, X } from "lucide-react";
 import { exigirSesion } from "../../../lib/permisos";
 import { prisma } from "../../../lib/prisma";
 import { estiloArea } from "../../../lib/areas";
@@ -21,8 +22,8 @@ export default async function Pregunta({ params }) {
     if (!pregunta) {
         return (
             <main className="mx-auto max-w-xl p-6">
-                <Link href="/pregunta" className="text-2xl font-extrabold text-gris">
-                    ✕
+                <Link href="/pregunta" aria-label="Volver" className="text-gris">
+                    <X size={26} strokeWidth={3} />
                 </Link>
                 <div className="tarjeta mt-4 text-center">
                     Todavía no hay preguntas en {area.nombre}.
@@ -41,6 +42,7 @@ export default async function Pregunta({ params }) {
     });
 
     const estilo = estiloArea(pregunta.area.nombre);
+    const Icono = estilo.Icono;
     const partes = separarEnunciado(pregunta.enunciado);
 
     return (
@@ -49,17 +51,17 @@ export default async function Pregunta({ params }) {
                 <Link
                     href="/pregunta"
                     aria-label="Volver"
-                    className="text-2xl font-extrabold text-gris hover:text-texto"
+                    className="text-gris hover:text-texto"
                 >
-                    ✕
+                    <X size={26} strokeWidth={3} />
                 </Link>
                 <span
                     className={
-                        "rounded-full px-3 py-1 text-sm font-extrabold text-white " +
+                        "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-extrabold text-white " +
                         estilo.fondo
                     }
                 >
-                    {estilo.emoji} {pregunta.area.nombre}
+                    <Icono size={16} strokeWidth={2.5} /> {pregunta.area.nombre}
                 </span>
             </div>
 
@@ -105,10 +107,18 @@ export default async function Pregunta({ params }) {
                                     </span>
                                     <span className="flex-1">{o.texto}</span>
                                     {o.esCorrecta && (
-                                        <span className="font-extrabold text-acierto-oscuro">✓</span>
+                                        <Check
+                                            size={22}
+                                            strokeWidth={3}
+                                            className="shrink-0 text-acierto-oscuro"
+                                        />
                                     )}
                                     {elegida && !o.esCorrecta && (
-                                        <span className="font-extrabold text-rojo-oscuro">✗</span>
+                                        <X
+                                            size={22}
+                                            strokeWidth={3}
+                                            className="shrink-0 text-rojo-oscuro"
+                                        />
                                     )}
                                 </div>
                             );

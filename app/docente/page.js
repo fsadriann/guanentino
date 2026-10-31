@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FileUp, Library, Users } from "lucide-react";
 import { prisma } from "../../lib/prisma";
 import { exigirDocente } from "../../lib/permisos";
 import Formulario from "./formulario";
@@ -13,9 +14,9 @@ export default async function Docente() {
     ]);
 
     const accesos = [
-        ["/docente/preguntas", "📚", "Banco de preguntas", totalPreguntas + " preguntas"],
-        ["/docente/estudiantes", "🎓", "Estudiantes", totalEstudiantes + " registrados"],
-        ["/docente/importar", "📥", "Importar preguntas", "Cargar un archivo"],
+        ["/docente/preguntas", Library, "Banco de preguntas", totalPreguntas + " preguntas"],
+        ["/docente/estudiantes", Users, "Estudiantes", totalEstudiantes + " registrados"],
+        ["/docente/importar", FileUp, "Importar preguntas", "Cargar un archivo"],
     ];
 
     return (
@@ -24,10 +25,10 @@ export default async function Docente() {
             <p className="mb-5 text-gris">Administra las preguntas y los estudiantes</p>
 
             <div className="animar-lista mb-8 grid gap-3">
-                {accesos.map(([href, emoji, titulo, detalle]) => (
+                {accesos.map(([href, Icono, titulo, detalle]) => (
                     <Link key={href} href={href} className="tarjeta flex items-center gap-4">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-azul-claro text-2xl">
-                            {emoji}
+                        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-azul-claro text-azul">
+                            <Icono size={24} strokeWidth={2.5} />
                         </span>
                         <span>
                             <span className="block text-lg font-extrabold">{titulo}</span>

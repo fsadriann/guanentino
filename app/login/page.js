@@ -11,8 +11,8 @@ export default function Login() {
         <main className="mx-auto max-w-sm p-6">
             <h1 className="mb-6 text-center text-2xl font-extrabold">Iniciar sesión</h1>
             <form action={accion} className="flex flex-col gap-3">
-                <input name="usuario" placeholder="Usuario" className="campo" required />
-                <input name="clave" type="password" placeholder="Clave" className="campo" required />
+                <input name="usuario" placeholder="Usuario" autoComplete="username" className="campo" required />
+                <input name="clave" type="password" placeholder="Clave" autoComplete="current-password" className="campo" required />
                 {estado?.error && <p className="mensaje-error">{estado.error}</p>}
                 <button disabled={pendiente} className="boton boton-ancho">
                     {pendiente ? "Entrando..." : "Entrar"}

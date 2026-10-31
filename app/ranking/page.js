@@ -1,7 +1,8 @@
+import { Medal, Star } from "lucide-react";
 import { exigirSesion } from "../../lib/permisos";
 import { topRanking } from "../../services/ranking";
 
-const medallas = ["🥇", "🥈", "🥉"];
+const coloresMedalla = ["text-amarillo", "text-gris", "text-naranja"];
 
 export default async function Ranking() {
     const sesion = await exigirSesion();
@@ -28,8 +29,16 @@ export default async function Ranking() {
                                     (soyYo ? "border-azul bg-azul-claro" : "")
                                 }
                             >
-                                <span className="w-10 text-center text-2xl font-extrabold text-gris">
-                                    {medallas[f.posicion - 1] ?? f.posicion}
+                                <span className="flex w-10 justify-center text-2xl font-extrabold text-gris">
+                                    {f.posicion <= 3 ? (
+                                        <Medal
+                                            size={32}
+                                            strokeWidth={2.5}
+                                            className={coloresMedalla[f.posicion - 1]}
+                                        />
+                                    ) : (
+                                        f.posicion
+                                    )}
                                 </span>
                                 <span className="flex-1">
                                     <span className="block font-extrabold">
@@ -41,8 +50,9 @@ export default async function Ranking() {
                                         {f.respondidas === 1 ? "respondida" : "respondidas"}
                                     </span>
                                 </span>
-                                <span className="font-extrabold text-amarillo-oscuro">
-                                    ⭐ {f.puntos}
+                                <span className="flex items-center gap-1 font-extrabold text-amarillo-oscuro">
+                                    <Star size={18} strokeWidth={2.5} fill="currentColor" />
+                                    {f.puntos}
                                 </span>
                             </div>
                         );

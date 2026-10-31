@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { KeyRound } from "lucide-react";
 import { auth, signOut } from "../../../auth";
 import { prisma } from "../../../lib/prisma";
 import Formulario from "./formulario";
@@ -17,10 +18,17 @@ export default async function Clave() {
             <h1 className="mb-6 text-center text-2xl font-extrabold">Cambiar clave</h1>
 
             {usuario?.debeCambiarClave && (
-                <p className="tarjeta mb-4 border-amarillo bg-superficie font-bold">
-                    🔑 Tu clave fue restablecida. Debes crear una clave nueva para seguir
-                    usando la plataforma.
-                </p>
+                <div className="tarjeta mb-4 flex items-start gap-3 border-amarillo bg-superficie font-bold">
+                    <KeyRound
+                        size={22}
+                        strokeWidth={2.5}
+                        className="mt-0.5 shrink-0 text-amarillo-oscuro"
+                    />
+                    <p>
+                        Tu clave fue restablecida. Debes crear una clave nueva para seguir
+                        usando la plataforma.
+                    </p>
+                </div>
             )}
 
             <Formulario />

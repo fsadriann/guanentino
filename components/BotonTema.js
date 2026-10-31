@@ -1,35 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Moon, Sun } from "lucide-react";
 
 export default function BotonTema() {
-    const [tema, setTema] = useState(null);
+    const [oscuro, setOscuro] = useState(false);
 
     useEffect(() => {
-        setTema(
-            document.documentElement.dataset.tema === "oscuro" ? "oscuro" : "claro"
-        );
+        setOscuro(document.documentElement.dataset.tema === "oscuro");
     }, []);
 
     function cambiar() {
-        const nuevo = tema === "oscuro" ? "claro" : "oscuro";
+        const nuevo = oscuro ? "claro" : "oscuro";
         document.documentElement.dataset.tema = nuevo;
         try {
             localStorage.setItem("tema", nuevo);
         } catch { }
-        setTema(nuevo);
+        setOscuro(!oscuro);
     }
 
     return (
         <button
             type="button"
+            role="switch"
+            aria-checked={oscuro}
+            aria-label="Modo oscuro"
             onClick={cambiar}
-            aria-label={
-                tema === "oscuro" ? "Cambiar a modo claro" : "Cambiar a modo oscuro"
-            }
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-xl hover:bg-superficie"
+            className="interruptor"
         >
-            {tema === null ? "" : tema === "oscuro" ? "☀️" : "🌙"}
+            <span className="interruptor-bola">
+                <Sun size={14} strokeWidth={3} className="icono-sol" />
+                <Moon size={14} strokeWidth={3} className="icono-luna" />
+            </span>
         </button>
     );
 }

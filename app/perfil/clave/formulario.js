@@ -9,9 +9,9 @@ export default function Formulario() {
 
     return (
         <form action={accion} className="flex flex-col gap-3">
-            <input name="actual" type="password" placeholder="Clave actual" className="campo" required />
-            <input name="nueva" type="password" placeholder="Clave nueva (mínimo 8 caracteres)" className="campo" required />
-            <input name="repetir" type="password" placeholder="Repite la clave nueva" className="campo" required />
+            <input name="actual" type="password" placeholder="Clave actual" autoComplete="current-password" className="campo" required />
+            <input name="nueva" type="password" placeholder="Clave nueva (mínimo 8 caracteres)" autoComplete="new-password" className="campo" required />
+            <input name="repetir" type="password" placeholder="Repite la clave nueva" autoComplete="new-password" className="campo" required />
 
             {estado?.error && <p className="mensaje-error">{estado.error}</p>}
             {estado?.ok && (
