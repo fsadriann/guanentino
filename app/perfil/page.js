@@ -13,53 +13,84 @@ export default async function Perfil() {
     if (!usuario) redirect("/login");
 
     const stats = await estadisticasUsuario(id);
+    const esDocente = ["DOCENTE", "ADMIN"].includes(usuario.rol);
 
     const tarjetas = [
-        ["Puntos", stats.puntos],
-        ["Posición", stats.posicion ? "#" + stats.posicion : "-"],
-        ["Racha", stats.racha + (stats.racha === 1 ? " día" : " días")],
-        ["Respondidas", stats.respondidas],
-        ["Aciertos", stats.aciertos],
+        { emoji: "⭐", titulo: "Puntos", valor: stats.puntos, color: "text-amarillo-oscuro" },
+        {
+            emoji: "🏆",
+            titulo: "Posición",
+            valor: stats.posicion ? "#" + stats.posicion : "-",
+            color: "text-morado",
+        },
+        {
+            emoji: "🔥",
+            titulo: "Racha",
+            valor: stats.racha + (stats.racha === 1 ? " día" : " días"),
+            color: "text-naranja-oscuro",
+        },
+        {
+            emoji: "✅",
+            titulo: "Aciertos",
+            valor: stats.aciertos + " de " + stats.respondidas,
+            color: "text-primario-oscuro",
+        },
     ];
 
     return (
         <main className="mx-auto max-w-xl p-6">
-            <h1 className="text-2xl font-bold">
-                {usuario.nombre} {usuario.apellido}
-            </h1>
-            <p className="mb-4 opacity-70">
-                @{usuario.usuario}
-                {usuario.colegio ? " · " + usuario.colegio : ""}
-            </p>
+            <div className="mb-6 flex items-center gap-4">
+                <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-b-4 border-azul-oscuro bg-azul text-3xl font-extrabold text-white">
+                    {usuario.nombre.charAt(0).toUpperCase()}
+                </span>
+                <div>
+                    <h1 className="text-2xl font-extrabold">
+                        {usuario.nombre} {usuario.apellido}
+                    </h1>
+                    <p className="text-gris">
+                        @{usuario.usuario}
+                        {usuario.colegio ? " · " + usuario.colegio : ""}
+                    </p>
+                    {esDocente && (
+                        <span className="mt-1 inline-block rounded-full bg-morado px-3 py-1 text-xs font-extrabold text-white">
+                            DOCENTE
+                        </span>
+                    )}
+                </div>
+            </div>
 
             <div className="mb-6 grid grid-cols-2 gap-3">
-                {tarjetas.map(([titulo, valor]) => (
-                    <div key={titulo} className="rounded border p-3">
-                        <p className="text-sm opacity-70">{titulo}</p>
-                        <p className="text-2xl font-bold">{valor}</p>
+                {tarjetas.map((t) => (
+                    <div key={t.titulo} className="tarjeta">
+                        <p className="text-2xl">{t.emoji}</p>
+                        <p className={"text-2xl font-extrabold " + t.color}>{t.valor}</p>
+                        <p className="text-sm font-extrabold uppercase tracking-wide text-gris">
+                            {t.titulo}
+                        </p>
                     </div>
                 ))}
             </div>
 
-            <nav className="mb-6 flex gap-4 text-blue-500 underline">
-                <Link href="/pregunta">Pregunta del día</Link>
-                <Link href="/ranking">Ranking</Link>
-                <Link href="/perfil/clave">Cambiar clave</Link>
-                {["DOCENTE", "ADMIN"].includes(usuario.rol) && (
-                    <Link href="/docente">Panel docente</Link>
+            <div className="flex flex-col gap-3">
+                {esDocente && (
+                    <Link href="/docente" className="boton boton-azul boton-ancho">
+                        Panel del docente
+                    </Link>
                 )}
-            </nav>
-
-            <form
-                action={async () => {
-                    "use server";
-                    await signOut({ redirectTo: "/login" });
-                }}
-            >
-                <button className="rounded bg-blue-600 p-2 text-white">
-                    Cerrar sesión
-                </button>
-            </form>
+                <Link href="/perfil/clave" className="boton boton-secundario boton-ancho">
+                    Cambiar clave
+                </Link>
+                <form
+                    action={async () => {
+                        "use server";
+                        await signOut({ redirectTo: "/login" });
+                    }}
+                >
+                    <button className="boton boton-secundario boton-ancho text-rojo">
+                        Cerrar sesión
+                    </button>
+                </form>
+            </div>
         </main>
     );
 }

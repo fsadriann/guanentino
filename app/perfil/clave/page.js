@@ -13,12 +13,12 @@ export default async function Clave() {
     });
 
     return (
-        <main className="mx-auto max-w-md p-6">
-            <h1 className="mb-4 text-2xl font-bold">Cambiar clave</h1>
+        <main className="mx-auto max-w-sm p-6">
+            <h1 className="mb-6 text-center text-2xl font-extrabold">Cambiar clave</h1>
 
             {usuario?.debeCambiarClave && (
-                <p className="mb-4 rounded border border-yellow-600 p-3">
-                    Tu clave fue restablecida. Debes crear una clave nueva para seguir
+                <p className="tarjeta mb-4 border-amarillo bg-superficie font-bold">
+                    🔑 Tu clave fue restablecida. Debes crear una clave nueva para seguir
                     usando la plataforma.
                 </p>
             )}
@@ -31,7 +31,7 @@ export default async function Clave() {
                     await signOut({ redirectTo: "/login" });
                 }}
             >
-                <button className="mt-6 text-sm underline opacity-70">
+                <button className="mt-6 w-full text-sm font-extrabold text-gris underline">
                     Cerrar sesión
                 </button>
             </form>
