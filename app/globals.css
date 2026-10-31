@@ -1,51 +1,165 @@
 @import "tailwindcss";
 
-@theme static {
-  --color-texto: #3c3c3c;
-  --color-gris: #777777;
-  --color-borde: #e5e5e5;
-  --color-superficie: #f7f7f7;
-
-  --color-primario: #43b929;
-  --color-primario-oscuro: #2f8f1c;
-  --color-primario-claro: #dcf7d2;
-
-  --color-azul: #1fa0e8;
-  --color-azul-oscuro: #1479b8;
-  --color-azul-claro: #ddf3ff;
-
-  --color-rojo: #ef4b4b;
-  --color-rojo-oscuro: #c23535;
-  --color-rojo-claro: #ffe0e0;
-
-  --color-amarillo: #ffc83d;
-  --color-amarillo-oscuro: #d9a21b;
-
-  --color-morado: #9b6bff;
-  --color-morado-oscuro: #7648d6;
-
-  --color-naranja: #ff9a3d;
-  --color-naranja-oscuro: #d6741c;
-
-  --color-rosa: #ff5fa2;
-  --color-rosa-oscuro: #d63f82;
-}
-
-html {
+:root {
   color-scheme: light;
+
+  --c-fondo: #ffffff;
+  --c-superficie: #f6f6fb;
+  --c-borde: #e4e4ee;
+  --c-texto: #2d2d3a;
+  --c-gris: #6b6b80;
+
+  --c-primario: #6366f1;
+  --c-primario-oscuro: #4338ca;
+  --c-primario-claro: #eef0ff;
+
+  --c-azul: #2563eb;
+  --c-azul-oscuro: #1d4ed8;
+  --c-azul-claro: #e3edff;
+
+  --c-acierto: #16a34a;
+  --c-acierto-oscuro: #166534;
+  --c-acierto-claro: #dcf7e6;
+
+  --c-rojo: #dc2626;
+  --c-rojo-oscuro: #b42318;
+  --c-rojo-claro: #ffe3e3;
+
+  --c-amarillo: #f5b700;
+  --c-amarillo-oscuro: #9a6700;
+
+  --c-morado: #7c4fe0;
+  --c-morado-oscuro: #5a35b5;
+  --c-naranja: #d4690d;
+  --c-naranja-oscuro: #a8500a;
+  --c-rosa: #d63d85;
+  --c-rosa-oscuro: #a82a65;
+  --c-teal: #0e8f7f;
+  --c-teal-oscuro: #0a6b5f;
+
+  /* rellenos que se ven igual en modo claro y oscuro */
+  --b-primario: #6366f1;
+  --b-primario-sombra: #4338ca;
+  --b-azul: #2563eb;
+  --b-azul-sombra: #1e40af;
+  --b-acierto: #15803d;
+  --b-acierto-sombra: #14532d;
+  --b-rojo: #dc2626;
+  --b-rojo-sombra: #991b1b;
+  --b-morado: #7c4fe0;
+  --b-naranja: #d4690d;
+  --b-rosa: #d63d85;
+  --b-teal: #0e8f7f;
 }
 
-body {
-  background: #ffffff;
-  color: var(--color-texto);
-  font-family: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
-  font-weight: 600;
+:root[data-tema="oscuro"] {
+  color-scheme: dark;
+
+  --c-fondo: #12121c;
+  --c-superficie: #1b1b2a;
+  --c-borde: #2f2f46;
+  --c-texto: #ececf5;
+  --c-gris: #a3a3bd;
+
+  --c-primario: #8b8dfa;
+  --c-primario-oscuro: #a5a7ff;
+  --c-primario-claro: #25264f;
+
+  --c-azul: #6ea3ff;
+  --c-azul-oscuro: #9bbfff;
+  --c-azul-claro: #192a4a;
+
+  --c-acierto: #3ddc84;
+  --c-acierto-oscuro: #7ee2a8;
+  --c-acierto-claro: #12301f;
+
+  --c-rojo: #ff6b6b;
+  --c-rojo-oscuro: #ff9a9a;
+  --c-rojo-claro: #3a1719;
+
+  --c-amarillo: #ffc83d;
+  --c-amarillo-oscuro: #ffd666;
+
+  --c-morado: #a78bfa;
+  --c-morado-oscuro: #c4b5fd;
+  --c-naranja: #fb923c;
+  --c-naranja-oscuro: #fdba74;
+  --c-rosa: #f472b6;
+  --c-rosa-oscuro: #f9a8d4;
+  --c-teal: #2dd4bf;
+  --c-teal-oscuro: #5eead4;
+}
+
+@theme inline {
+  --color-fondo: var(--c-fondo);
+  --color-superficie: var(--c-superficie);
+  --color-borde: var(--c-borde);
+  --color-texto: var(--c-texto);
+  --color-gris: var(--c-gris);
+
+  --color-primario: var(--c-primario);
+  --color-primario-oscuro: var(--c-primario-oscuro);
+  --color-primario-claro: var(--c-primario-claro);
+
+  --color-azul: var(--c-azul);
+  --color-azul-oscuro: var(--c-azul-oscuro);
+  --color-azul-claro: var(--c-azul-claro);
+
+  --color-acierto: var(--c-acierto);
+  --color-acierto-oscuro: var(--c-acierto-oscuro);
+  --color-acierto-claro: var(--c-acierto-claro);
+
+  --color-rojo: var(--c-rojo);
+  --color-rojo-oscuro: var(--c-rojo-oscuro);
+  --color-rojo-claro: var(--c-rojo-claro);
+
+  --color-amarillo: var(--c-amarillo);
+  --color-amarillo-oscuro: var(--c-amarillo-oscuro);
+
+  --color-morado: var(--c-morado);
+  --color-morado-oscuro: var(--c-morado-oscuro);
+  --color-naranja: var(--c-naranja);
+  --color-naranja-oscuro: var(--c-naranja-oscuro);
+  --color-rosa: var(--c-rosa);
+  --color-rosa-oscuro: var(--c-rosa-oscuro);
+  --color-teal: var(--c-teal);
+  --color-teal-oscuro: var(--c-teal-oscuro);
+
+  --color-relleno-primario: var(--b-primario);
+  --color-relleno-azul: var(--b-azul);
+  --color-relleno-rojo: var(--b-rojo);
+  --color-relleno-morado: var(--b-morado);
+  --color-relleno-naranja: var(--b-naranja);
+  --color-relleno-rosa: var(--b-rosa);
+  --color-relleno-teal: var(--b-teal);
+}
+
+@layer base {
+  html {
+    background: var(--c-fondo);
+  }
+  body {
+    background: var(--c-fondo);
+    color: var(--c-texto);
+    font-family: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 600;
+  }
+  :focus-visible {
+    outline: 3px solid var(--c-azul);
+    outline-offset: 2px;
+  }
+  button,
+  a,
+  label {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @layer components {
   .boton {
-    --c: var(--color-primario);
-    --co: var(--color-primario-oscuro);
+    --c: var(--b-primario);
+    --co: var(--b-primario-sombra);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -62,77 +176,105 @@ body {
     cursor: pointer;
     transition: transform 0.08s, box-shadow 0.08s, filter 0.15s;
   }
-  .boton:hover {
-    filter: brightness(1.06);
+  .boton:hover:not(:disabled) {
+    filter: brightness(1.08);
   }
-  .boton:active {
+  .boton:active:not(:disabled) {
     transform: translateY(4px);
     box-shadow: 0 0 0 var(--co);
   }
   .boton:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: 0 4px 0 var(--co);
   }
   .boton-azul {
-    --c: var(--color-azul);
-    --co: var(--color-azul-oscuro);
+    --c: var(--b-azul);
+    --co: var(--b-azul-sombra);
+  }
+  .boton-acierto {
+    --c: var(--b-acierto);
+    --co: var(--b-acierto-sombra);
   }
   .boton-rojo {
-    --c: var(--color-rojo);
-    --co: var(--color-rojo-oscuro);
+    --c: var(--b-rojo);
+    --co: var(--b-rojo-sombra);
   }
   .boton-secundario {
-    --c: #ffffff;
-    --co: var(--color-borde);
-    border-color: var(--color-borde);
-    color: var(--color-azul);
+    --c: var(--c-fondo);
+    --co: var(--c-borde);
+    border-color: var(--c-borde);
+    color: var(--c-azul);
   }
   .boton-ancho {
     width: 100%;
   }
 
   .tarjeta {
-    border: 2px solid var(--color-borde);
+    border: 2px solid var(--c-borde);
     border-bottom-width: 4px;
     border-radius: 1.25rem;
     padding: 1rem;
-    background: #ffffff;
+    background: var(--c-fondo);
   }
   a.tarjeta:hover {
-    background: var(--color-superficie);
+    background: var(--c-superficie);
   }
 
   .campo {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 2px solid var(--color-borde);
+    border: 2px solid var(--c-borde);
     border-radius: 1rem;
-    background: var(--color-superficie);
+    background: var(--c-superficie);
+    color: var(--c-texto);
     font-weight: 600;
+  }
+  .campo::placeholder {
+    color: var(--c-gris);
+    opacity: 0.8;
   }
   .campo:focus {
     outline: none;
-    border-color: var(--color-azul);
-    background: #ffffff;
+    border-color: var(--c-azul);
+    background: var(--c-fondo);
   }
 
   .mensaje-error {
     padding: 0.75rem 1rem;
-    border: 2px solid var(--color-rojo);
+    border: 2px solid var(--c-rojo);
     border-radius: 1rem;
-    background: var(--color-rojo-claro);
-    color: var(--color-rojo-oscuro);
+    background: var(--c-rojo-claro);
+    color: var(--c-rojo-oscuro);
     font-weight: 700;
   }
   .mensaje-ok {
     padding: 0.75rem 1rem;
-    border: 2px solid var(--color-primario);
+    border: 2px solid var(--c-acierto);
     border-radius: 1rem;
-    background: var(--color-primario-claro);
-    color: var(--color-primario-oscuro);
+    background: var(--c-acierto-claro);
+    color: var(--c-acierto-oscuro);
     font-weight: 700;
+  }
+
+  .esqueleto {
+    border-radius: 1rem;
+    background: linear-gradient(
+      90deg,
+      var(--c-borde) 25%,
+      var(--c-superficie) 50%,
+      var(--c-borde) 75%
+    );
+    background-size: 200% 100%;
+    animation: brillo 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes brillo {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
   }
 }
 
@@ -213,7 +355,8 @@ body {
   .animar-entrada,
   .animar-rebote,
   .animar-sacudida,
-  .animar-lista > * {
+  .animar-lista > *,
+  .esqueleto {
     animation: none;
   }
 }

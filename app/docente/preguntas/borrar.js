@@ -10,7 +10,7 @@ export default function Borrar({ preguntaId }) {
                 onClick={(e) => {
                     if (!confirm("¿Borrar esta pregunta?")) e.preventDefault();
                 }}
-                className="text-sm text-red-600 underline"
+                className="text-sm font-extrabold text-rojo"
             >
                 Borrar
             </button>

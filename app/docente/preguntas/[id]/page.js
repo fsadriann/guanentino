@@ -24,10 +24,10 @@ export default async function Editar({ params }) {
 
     return (
         <main className="mx-auto max-w-xl p-6">
-            <Link href="/docente/preguntas" className="text-blue-500 underline">
-                Volver al banco
+            <Link href="/docente/preguntas" className="text-sm font-extrabold text-azul">
+                ← Banco de preguntas
             </Link>
-            <h1 className="my-4 text-2xl font-bold">Editar pregunta</h1>
+            <h1 className="my-4 text-2xl font-extrabold">Editar pregunta</h1>
             <Formulario
                 pregunta={pregunta}
                 areas={areas}

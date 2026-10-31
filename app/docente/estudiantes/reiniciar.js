@@ -7,7 +7,7 @@ export default function Reiniciar({ usuarioId }) {
     const [estado, accion, pendiente] = useActionState(restablecerClave, null);
 
     return (
-        <form action={accion} className="flex items-center gap-2">
+        <form action={accion} className="flex flex-wrap items-center gap-3">
             <input type="hidden" name="usuarioId" value={usuarioId} />
             <button
                 disabled={pendiente}
@@ -16,14 +16,14 @@ export default function Reiniciar({ usuarioId }) {
                         e.preventDefault();
                     }
                 }}
-                className="rounded border px-2 py-1 text-sm"
+                className="boton boton-secundario px-4 py-2 text-xs"
             >
                 {pendiente ? "..." : "Restablecer clave"}
             </button>
             {estado?.clave && (
-                <span className="font-mono text-green-600">{estado.clave}</span>
+                <span className="mensaje-ok font-mono">{estado.clave}</span>
             )}
-            {estado?.error && <span className="text-red-600">{estado.error}</span>}
+            {estado?.error && <span className="mensaje-error">{estado.error}</span>}
         </form>
     );
 }

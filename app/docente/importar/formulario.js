@@ -12,21 +12,21 @@ export default function Formulario() {
                 type="file"
                 name="archivo"
                 accept=".json,application/json"
-                className="rounded border p-2"
+                className="campo"
                 required
             />
 
-            {estado?.error && <p className="text-red-600">{estado.error}</p>}
+            {estado?.error && <p className="mensaje-error">{estado.error}</p>}
             {estado?.detalles && (
-                <ul className="list-disc pl-6 text-red-600">
+                <ul className="mensaje-error list-disc pl-8">
                     {estado.detalles.map((d, i) => (
                         <li key={i}>{d}</li>
                     ))}
                 </ul>
             )}
-            {estado?.ok && <p className="text-green-600">{estado.ok}</p>}
+            {estado?.ok && <p className="mensaje-ok">{estado.ok}</p>}
 
-            <button disabled={pendiente} className="rounded bg-blue-600 p-2 text-white">
+            <button disabled={pendiente} className="boton boton-ancho">
                 {pendiente ? "Cargando..." : "Cargar preguntas"}
             </button>
         </form>

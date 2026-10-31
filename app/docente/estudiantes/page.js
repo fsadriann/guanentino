@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "../../../lib/prisma";
 import { exigirDocente } from "../../../lib/permisos";
 import Reiniciar from "./reiniciar";
@@ -25,36 +26,47 @@ export default async function Estudiantes() {
     const puntos = new Map(grupos.map((g) => [g.usuarioId, g._sum.puntaje ?? 0]));
 
     return (
-        <main className="mx-auto max-w-4xl p-6">
-            <h1 className="mb-1 text-2xl font-bold">Estudiantes</h1>
-            <p className="mb-4 opacity-70">Total {estudiantes.length}</p>
+        <main className="mx-auto max-w-xl p-6">
+            <Link href="/docente" className="text-sm font-extrabold text-azul">
+                ← Panel del docente
+            </Link>
+            <h1 className="mt-3 text-2xl font-extrabold">Estudiantes</h1>
+            <p className="mb-5 text-gris">{estudiantes.length} registrados</p>
 
-            <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                    <thead>
-                        <tr className="border-b">
-                            <th className="p-2">Nombre</th>
-                            <th className="p-2">Usuario</th>
-                            <th className="p-2">Colegio</th>
-                            <th className="p-2">Puntos</th>
-                            <th className="p-2">Respondidas</th>
-                            <th className="p-2">Clave</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {estudiantes.map((e) => (
-                            <tr key={e.id} className="border-b">
-                                <td className="p-2">{e.apellido} {e.nombre}</td>
-                                <td className="p-2">{e.usuario}</td>
-                                <td className="p-2">{e.colegio ?? "-"}</td>
-                                <td className="p-2">{puntos.get(e.id) ?? 0}</td>
-                                <td className="p-2">{e._count.respuestas}</td>
-                                <td className="p-2"><Reiniciar usuarioId={e.id} /></td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            {estudiantes.length === 0 ? (
+                <div className="tarjeta text-center text-gris">
+                    Todavía no hay estudiantes registrados.
+                </div>
+            ) : (
+                <div className="animar-lista flex flex-col gap-3">
+                    {estudiantes.map((e) => (
+                        <div key={e.id} className="tarjeta">
+                            <div className="flex items-start justify-between gap-3">
+                                <div>
+                                    <p className="font-extrabold">
+                                        {e.apellido} {e.nombre}
+                                    </p>
+                                    <p className="text-sm text-gris">
+                                        @{e.usuario}
+                                        {e.colegio ? " · " + e.colegio : ""}
+                                    </p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-extrabold text-amarillo-oscuro">
+                                        ⭐ {puntos.get(e.id) ?? 0}
+                                    </p>
+                                    <p className="text-xs text-gris">
+                                        {e._count.respuestas} respondidas
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="mt-3 border-t-2 border-borde pt-3">
+                                <Reiniciar usuarioId={e.id} />
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </main>
     );
 }

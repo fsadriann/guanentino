@@ -11,7 +11,7 @@ export default function Formulario({ pregunta, areas, bloqueada }) {
         <form action={accion} className="flex flex-col gap-3">
             <input type="hidden" name="id" value={pregunta.id} />
 
-            <select name="areaId" defaultValue={pregunta.areaId} className="rounded border p-2">
+            <select name="areaId" defaultValue={pregunta.areaId} className="campo">
                 {areas.map((a) => (
                     <option key={a.id} value={a.id}>
                         {a.nombre}
@@ -19,35 +19,54 @@ export default function Formulario({ pregunta, areas, bloqueada }) {
                 ))}
             </select>
 
-            <textarea name="enunciado" defaultValue={pregunta.enunciado} className="rounded border p-2" rows={3} required />
+            <textarea
+                name="enunciado"
+                defaultValue={pregunta.enunciado}
+                className="campo"
+                rows={5}
+                required
+            />
 
             {pregunta.opciones.map((o, i) => (
-                <label key={o.id} className="flex items-center gap-2">
+                <label key={o.id} className="flex items-center gap-3">
                     <input
                         type="radio"
                         name="correcta"
                         value={i}
                         defaultChecked={i === correctaActual}
                         disabled={bloqueada && i !== correctaActual}
+                        className="h-5 w-5 shrink-0 accent-primario disabled:opacity-40"
                     />
-                    <input name={"opcion" + i} defaultValue={o.texto} className="flex-1 rounded border p-2" required />
+                    <input
+                        name={"opcion" + i}
+                        defaultValue={o.texto}
+                        className="campo"
+                        required
+                    />
                 </label>
             ))}
 
             {bloqueada ? (
-                <p className="text-sm opacity-70">
-                    Esta pregunta ya tiene respuestas. Puedes corregir los textos pero no la opción correcta.
+                <p className="tarjeta border-amarillo text-sm">
+                    Esta pregunta ya tiene respuestas. Puedes corregir los textos pero no
+                    la opción correcta.
                 </p>
             ) : (
-                <p className="text-sm opacity-70">Marca el círculo de la opción correcta.</p>
+                <p className="text-sm text-gris">Marca el círculo de la opción correcta.</p>
             )}
 
-            <textarea name="explicacion" defaultValue={pregunta.explicacion} className="rounded border p-2" rows={3} required />
+            <textarea
+                name="explicacion"
+                defaultValue={pregunta.explicacion}
+                className="campo"
+                rows={3}
+                required
+            />
 
-            {estado?.error && <p className="text-red-600">{estado.error}</p>}
-            {estado?.ok && <p className="text-green-600">{estado.ok}</p>}
+            {estado?.error && <p className="mensaje-error">{estado.error}</p>}
+            {estado?.ok && <p className="mensaje-ok">{estado.ok}</p>}
 
-            <button disabled={pendiente} className="rounded bg-blue-600 p-2 text-white">
+            <button disabled={pendiente} className="boton boton-ancho">
                 {pendiente ? "Guardando..." : "Guardar cambios"}
             </button>
         </form>
