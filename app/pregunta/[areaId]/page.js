@@ -42,7 +42,7 @@ export default async function Pregunta({ params }) {
                 Volver
             </Link>
             <p className="mt-4 text-sm opacity-70">{pregunta.area.nombre}</p>
-            <h1 className="mb-4 text-2xl font-bold">{pregunta.enunciado}</h1>
+            <h1 className="mb-4 whitespace-pre-line text-2xl font-bold">{pregunta.enunciado}</h1>
 
             {!respuesta ? (
                 <form action={responder} className="flex flex-col gap-2">

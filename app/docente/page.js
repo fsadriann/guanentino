@@ -17,6 +17,7 @@ export default async function Docente() {
             <nav className="mb-6 flex gap-4 text-blue-500 underline">
                 <Link href="/docente/preguntas">Ver banco de preguntas</Link>
                 <Link href="/docente/estudiantes">Ver estudiantes</Link>
+                <Link href="/docente/importar">Importar preguntas</Link>
             </nav>
 
             <Formulario areas={areas} />
