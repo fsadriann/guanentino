@@ -9,7 +9,7 @@ export default function NavInferior({ enlaces }) {
     if (/^\/pregunta\/\d+/.test(ruta)) return null;
 
     return (
-        <nav className="fixed inset-x-0 bottom-0 z-10 flex border-t-2 border-borde bg-white md:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-10 flex border-t-2 border-borde bg-fondo md:hidden">
             {enlaces.map(([href, texto, emoji]) => {
                 const activo = ruta === href || ruta.startsWith(href + "/");
                 return (

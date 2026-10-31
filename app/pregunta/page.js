@@ -64,7 +64,7 @@ export default async function Preguntas() {
                                 ) : !respuesta ? (
                                     <span className="text-sm font-extrabold text-azul">EMPEZAR</span>
                                 ) : respuesta.acierto ? (
-                                    <span className="text-sm font-extrabold text-primario-oscuro">
+                                    <span className="text-sm font-extrabold text-acierto-oscuro">
                                         ✓ CORRECTA
                                     </span>
                                 ) : (

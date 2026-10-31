@@ -33,14 +33,14 @@ export default async function Perfil() {
             emoji: "✅",
             titulo: "Aciertos",
             valor: stats.aciertos + " de " + stats.respondidas,
-            color: "text-primario-oscuro",
+            color: "text-acierto-oscuro",
         },
     ];
 
     return (
         <main className="mx-auto max-w-xl p-6">
             <div className="mb-6 flex items-center gap-4">
-                <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-b-4 border-azul-oscuro bg-azul text-3xl font-extrabold text-white">
+                <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-b-4 border-black/25 bg-relleno-azul text-3xl font-extrabold text-white">
                     {usuario.nombre.charAt(0).toUpperCase()}
                 </span>
                 <div>
@@ -52,7 +52,7 @@ export default async function Perfil() {
                         {usuario.colegio ? " · " + usuario.colegio : ""}
                     </p>
                     {esDocente && (
-                        <span className="mt-1 inline-block rounded-full bg-morado px-3 py-1 text-xs font-extrabold text-white">
+                        <span className="mt-1 inline-block rounded-full bg-relleno-morado px-3 py-1 text-xs font-extrabold text-white">
                             DOCENTE
                         </span>
                     )}

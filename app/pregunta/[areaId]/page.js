@@ -5,7 +5,7 @@ import { prisma } from "../../../lib/prisma";
 import { estiloArea } from "../../../lib/areas";
 import { separarEnunciado } from "../../../lib/enunciado";
 import { preguntaDelDia } from "../../../services/preguntas";
-import { responder } from "../actions";
+import FormularioRespuesta from "./formulario-respuesta";
 
 export default async function Pregunta({ params }) {
     const sesion = await exigirSesion();
@@ -55,7 +55,8 @@ export default async function Pregunta({ params }) {
                 </Link>
                 <span
                     className={
-                        "rounded-full px-3 py-1 text-sm font-extrabold text-white " + estilo.fondo
+                        "rounded-full px-3 py-1 text-sm font-extrabold text-white " +
+                        estilo.fondo
                     }
                 >
                     {estilo.emoji} {pregunta.area.nombre}
@@ -79,48 +80,32 @@ export default async function Pregunta({ params }) {
             </h1>
 
             {!respuesta ? (
-                <form action={responder} className="animar-lista flex flex-col gap-3">
-                    <input type="hidden" name="areaId" value={id} />
-                    {pregunta.opciones.map((o, i) => (
-                        <label key={o.id} className="cursor-pointer">
-                            <input
-                                type="radio"
-                                name="opcionId"
-                                value={o.id}
-                                required
-                                className="peer sr-only"
-                            />
-                            <div className="tarjeta flex items-center gap-3 peer-checked:border-azul peer-checked:bg-azul-claro peer-focus-visible:ring-2 peer-focus-visible:ring-azul">
-                                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-2 border-borde text-sm font-extrabold text-gris">
-                                    {"ABCD"[i]}
-                                </span>
-                                <span>{o.texto}</span>
-                            </div>
-                        </label>
-                    ))}
-                    <div className="sticky bottom-0 -mx-6 mt-4 border-t-2 border-borde bg-white p-4">
-                        <button className="boton boton-ancho">Comprobar</button>
-                    </div>
-                </form>
+                <FormularioRespuesta
+                    areaId={id}
+                    opciones={pregunta.opciones.map((o) => ({ id: o.id, texto: o.texto }))}
+                />
             ) : (
                 <div>
                     <div className="flex flex-col gap-3">
                         {pregunta.opciones.map((o, i) => {
                             const elegida = o.id === respuesta.opcionId;
                             const clase = o.esCorrecta
-                                ? "border-primario bg-primario-claro" +
+                                ? "border-acierto bg-acierto-claro" +
                                 (respuesta.acierto ? " animar-rebote" : "")
                                 : elegida
                                     ? "border-rojo bg-rojo-claro animar-sacudida"
                                     : "opacity-60";
                             return (
-                                <div key={o.id} className={"tarjeta flex items-center gap-3 " + clase}>
-                                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-2 border-borde bg-white text-sm font-extrabold text-gris">
+                                <div
+                                    key={o.id}
+                                    className={"tarjeta flex items-center gap-3 " + clase}
+                                >
+                                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-2 border-borde bg-fondo text-sm font-extrabold text-gris">
                                         {"ABCD"[i]}
                                     </span>
                                     <span className="flex-1">{o.texto}</span>
                                     {o.esCorrecta && (
-                                        <span className="font-extrabold text-primario-oscuro">✓</span>
+                                        <span className="font-extrabold text-acierto-oscuro">✓</span>
                                     )}
                                     {elegida && !o.esCorrecta && (
                                         <span className="font-extrabold text-rojo-oscuro">✗</span>
@@ -134,7 +119,7 @@ export default async function Pregunta({ params }) {
                         className={
                             "animar-entrada mt-6 rounded-2xl p-5 " +
                             (respuesta.acierto
-                                ? "bg-primario-claro text-primario-oscuro"
+                                ? "bg-acierto-claro text-acierto-oscuro"
                                 : "bg-rojo-claro text-rojo-oscuro")
                         }
                     >
@@ -149,11 +134,12 @@ export default async function Pregunta({ params }) {
                         <p className="whitespace-pre-line">{pregunta.explicacion}</p>
                     </div>
 
-                    <div className="sticky bottom-0 -mx-6 mt-4 border-t-2 border-borde bg-white p-4">
+                    <div className="sticky bottom-0 -mx-6 mt-4 border-t-2 border-borde bg-fondo p-4">
                         <Link
                             href="/pregunta"
                             className={
-                                "boton boton-ancho " + (respuesta.acierto ? "" : "boton-rojo")
+                                "boton boton-ancho " +
+                                (respuesta.acierto ? "boton-acierto" : "boton-rojo")
                             }
                         >
                             Continuar
