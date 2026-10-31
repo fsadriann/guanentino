@@ -9,8 +9,11 @@ export async function responder(formData) {
     const sesion = await auth();
     if (!sesion) return;
 
+    const areaId = Number(formData.get("areaId"));
     const opcionId = Number(formData.get("opcionId"));
-    const pregunta = await preguntaDelDia();
+    if (!Number.isInteger(areaId)) return;
+
+    const pregunta = await preguntaDelDia(areaId);
     if (!pregunta) return;
 
     const opcion = pregunta.opciones.find((o) => o.id === opcionId);
@@ -31,4 +34,5 @@ export async function responder(formData) {
     }
 
     revalidatePath("/pregunta");
+    revalidatePath("/pregunta/" + areaId);
 }

@@ -30,6 +30,7 @@ model Area {
   id        Int        @id @default(autoincrement())
   nombre    String     @unique
   preguntas Pregunta[]
+  delDia    PreguntaDelDia[]
 }
 
 model Pregunta {
@@ -65,12 +66,6 @@ model Respuesta {
   @@unique([usuarioId, preguntaId])
 }
 
-model PreguntaDelDia {
-  fecha      DateTime @id @db.Date
-  preguntaId Int
-  pregunta   Pregunta @relation(fields: [preguntaId], references: [id])
-}
-
 model IntentoLogin {
   id      Int      @id @default(autoincrement())
   usuario String
@@ -79,4 +74,14 @@ model IntentoLogin {
 
   @@index([usuario, fecha])
   @@index([ip, fecha])
+}
+
+model PreguntaDelDia {
+  fecha      DateTime @db.Date
+  areaId     Int
+  preguntaId Int
+  area       Area     @relation(fields: [areaId], references: [id])
+  pregunta   Pregunta @relation(fields: [preguntaId], references: [id])
+
+  @@id([fecha, areaId])
 }
