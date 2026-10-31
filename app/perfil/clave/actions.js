@@ -4,6 +4,12 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { auth } from "../../../auth";
 import { prisma } from "../../../lib/prisma";
+import {
+    estaBloqueado,
+    limpiarFallos,
+    MENSAJE_BLOQUEO,
+    registrarFallo,
+} from "../../../lib/intentos";
 
 const esquema = z
     .object({
@@ -28,13 +34,20 @@ export async function cambiarClave(estadoPrevio, formData) {
     const usuario = await prisma.usuario.findUnique({ where: { id } });
     if (!usuario) return { error: "No se encontró tu cuenta" };
 
+    if (await estaBloqueado(usuario.usuario)) return { error: MENSAJE_BLOQUEO };
+
     const coincide = await bcrypt.compare(actual, usuario.clave);
-    if (!coincide) return { error: "La clave actual no es correcta" };
+    if (!coincide) {
+        await registrarFallo(usuario.usuario);
+        return { error: "La clave actual no es correcta" };
+    }
     if (actual === nueva) return { error: "La clave nueva debe ser distinta" };
 
     await prisma.usuario.update({
         where: { id },
         data: { clave: await bcrypt.hash(nueva, 10), debeCambiarClave: false },
     });
+    await limpiarFallos(usuario.usuario);
+
     return { ok: "Clave cambiada" };
 }

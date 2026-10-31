@@ -5,9 +5,14 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { prisma } from "../../../lib/prisma";
 import { exigirSesion } from "../../../lib/permisos";
-import { CLAVES_COLORES, CLAVES_ICONOS } from "../../../lib/avatar";
-import { headers } from "next/headers";
 import { signOut } from "../../../auth";
+import { CLAVES_COLORES, CLAVES_ICONOS } from "../../../lib/avatar";
+import {
+    estaBloqueado,
+    limpiarFallos,
+    MENSAJE_BLOQUEO,
+    registrarFallo,
+} from "../../../lib/intentos";
 
 const esquemaPerfil = z.object({
     nombre: z.string().trim().min(1, "Escribe tu nombre").max(50, "El nombre es muy largo"),
@@ -66,8 +71,13 @@ export async function cambiarCorreo(estadoPrevio, formData) {
     const usuario = await prisma.usuario.findUnique({ where: { id } });
     if (!usuario) return { error: "No se encontró tu cuenta" };
 
+    if (await estaBloqueado(usuario.usuario)) return { error: MENSAJE_BLOQUEO };
+
     const coincide = await bcrypt.compare(clave, usuario.clave);
-    if (!coincide) return { error: "La clave actual no es correcta" };
+    if (!coincide) {
+        await registrarFallo(usuario.usuario);
+        return { error: "La clave actual no es correcta" };
+    }
 
     if (correo === usuario.correo) return { error: "Ese ya es tu correo" };
 
@@ -77,6 +87,7 @@ export async function cambiarCorreo(estadoPrevio, formData) {
     if (existe) return { error: "Ese correo ya está registrado" };
 
     await prisma.usuario.update({ where: { id }, data: { correo } });
+    await limpiarFallos(usuario.usuario);
 
     revalidatePath("/perfil/configuracion");
     return { ok: "Correo actualizado" };
@@ -115,19 +126,11 @@ export async function eliminarCuenta(estadoPrevio, formData) {
         return { error: "Las cuentas de docente no se pueden eliminar desde aquí" };
     }
 
-    const cabeceras = await headers();
-    const ip = (cabeceras.get("x-forwarded-for") ?? "local").split(",")[0].trim();
-    const desde = new Date(Date.now() - 15 * 60 * 1000);
-    const fallos = await prisma.intentoLogin.count({
-        where: { usuario: usuario.usuario, fecha: { gte: desde } },
-    });
-    if (fallos >= 5) {
-        return { error: "Demasiados intentos fallidos. Espera 15 minutos e intenta de nuevo" };
-    }
+    if (await estaBloqueado(usuario.usuario)) return { error: MENSAJE_BLOQUEO };
 
     const coincide = await bcrypt.compare(clave, usuario.clave);
     if (!coincide) {
-        await prisma.intentoLogin.create({ data: { usuario: usuario.usuario, ip } });
+        await registrarFallo(usuario.usuario);
         return { error: "La clave actual no es correcta" };
     }
 

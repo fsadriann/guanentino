@@ -1,9 +1,9 @@
-import Link from "next/link";
+import { Star } from "lucide-react";
 import { prisma } from "../../../lib/prisma";
 import { exigirDocente } from "../../../lib/permisos";
-import Reiniciar from "./reiniciar";
-import { Star } from "lucide-react";
 import EnlaceVolver from "../../../components/EnlaceVolver";
+import Reiniciar from "./reiniciar";
+import Eliminar from "./eliminar";
 
 export default async function Estudiantes() {
     await exigirDocente();
@@ -56,10 +56,14 @@ export default async function Estudiantes() {
                                         <Star size={16} strokeWidth={2.5} fill="currentColor" />
                                         {puntos.get(e.id) ?? 0}
                                     </p>
+                                    <p className="text-xs text-gris">
+                                        {e._count.respuestas} respondidas
+                                    </p>
                                 </div>
                             </div>
-                            <div className="mt-3 border-t-2 border-borde pt-3">
+                            <div className="mt-3 flex flex-col gap-3 border-t-2 border-borde pt-3">
                                 <Reiniciar usuarioId={e.id} />
+                                <Eliminar usuarioId={e.id} usuario={e.usuario} />
                             </div>
                         </div>
                     ))}
