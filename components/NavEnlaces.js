@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function NavEnlaces({ enlaces }) {
+export default function NavEnlaces({ enlaces, className = "" }) {
     const ruta = usePathname();
 
     return (
-        <div className="flex flex-wrap items-center gap-1">
+        <div className={"flex-wrap items-center gap-1 " + className}>
             {enlaces.map(([href, texto]) => {
                 const activo = ruta === href || ruta.startsWith(href + "/");
                 return (

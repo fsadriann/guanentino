@@ -13,13 +13,17 @@ export const metadata = {
   description: "Una pregunta al día para prepararte para las pruebas Saber 11",
 };
 
+export const viewport = {
+  themeColor: "#43b929",
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className={`${nunito.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <Navbar />
         <div className="flex-1">{children}</div>
-        <footer className="border-t-2 border-borde p-4 text-center text-sm text-gris">
+        <footer className="border-t-2 border-borde p-4 pb-24 text-center text-sm text-gris md:pb-4">
           <Link href="/privacidad" className="font-bold underline">
             Política de privacidad
           </Link>

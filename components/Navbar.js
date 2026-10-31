@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { auth } from "../auth";
 import NavEnlaces from "./NavEnlaces";
+import NavInferior from "./NavInferior";
 
 export default async function Navbar() {
     const sesion = await auth();
@@ -8,10 +9,10 @@ export default async function Navbar() {
 
     const enlaces = sesion
         ? [
-            ["/pregunta", "Preguntas"],
-            ["/ranking", "Ranking"],
-            ["/perfil", "Perfil"],
-            ...(esDocente ? [["/docente", "Docente"]] : []),
+            ["/pregunta", "Preguntas", "📝"],
+            ["/ranking", "Ranking", "🏆"],
+            ["/perfil", "Perfil", "👤"],
+            ...(esDocente ? [["/docente", "Docente", "🧑‍🏫"]] : []),
         ]
         : [
             ["/login", "Entrar"],
@@ -19,16 +20,22 @@ export default async function Navbar() {
         ];
 
     return (
-        <header className="sticky top-0 z-10 border-b-2 border-borde bg-white">
-            <nav className="mx-auto flex max-w-3xl flex-wrap items-center gap-2 px-4 py-3">
-                <Link
-                    href={sesion ? "/pregunta" : "/"}
-                    className="mr-auto text-xl font-extrabold text-primario"
-                >
-                    Guanentino
-                </Link>
-                <NavEnlaces enlaces={enlaces} />
-            </nav>
-        </header>
+        <>
+            <header className="sticky top-0 z-10 border-b-2 border-borde bg-white">
+                <nav className="mx-auto flex max-w-3xl items-center gap-2 px-4 py-3">
+                    <Link
+                        href={sesion ? "/pregunta" : "/"}
+                        className="mr-auto text-xl font-extrabold text-primario"
+                    >
+                        Guanentino
+                    </Link>
+                    <NavEnlaces
+                        enlaces={enlaces}
+                        className={sesion ? "hidden md:flex" : "flex"}
+                    />
+                </nav>
+            </header>
+            {sesion && <NavInferior enlaces={enlaces} />}
+        </>
     );
 }

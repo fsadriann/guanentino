@@ -17,7 +17,7 @@ export default async function Ranking() {
                     Todavía nadie ha respondido. ¡Sé el primero!
                 </div>
             ) : (
-                <div className="flex flex-col gap-3">
+                <div className="animar-lista flex flex-col gap-3">
                     {filas.map((f) => {
                         const soyYo = String(f.id) === sesion.user.id;
                         return (

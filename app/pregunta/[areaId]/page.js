@@ -79,7 +79,7 @@ export default async function Pregunta({ params }) {
             </h1>
 
             {!respuesta ? (
-                <form action={responder} className="flex flex-col gap-3">
+                <form action={responder} className="animar-lista flex flex-col gap-3">
                     <input type="hidden" name="areaId" value={id} />
                     {pregunta.opciones.map((o, i) => (
                         <label key={o.id} className="cursor-pointer">
@@ -98,7 +98,9 @@ export default async function Pregunta({ params }) {
                             </div>
                         </label>
                     ))}
-                    <button className="boton boton-ancho mt-4">Comprobar</button>
+                    <div className="sticky bottom-0 -mx-6 mt-4 border-t-2 border-borde bg-white p-4">
+                        <button className="boton boton-ancho">Comprobar</button>
+                    </div>
                 </form>
             ) : (
                 <div>
@@ -106,9 +108,10 @@ export default async function Pregunta({ params }) {
                         {pregunta.opciones.map((o, i) => {
                             const elegida = o.id === respuesta.opcionId;
                             const clase = o.esCorrecta
-                                ? "border-primario bg-primario-claro"
+                                ? "border-primario bg-primario-claro" +
+                                (respuesta.acierto ? " animar-rebote" : "")
                                 : elegida
-                                    ? "border-rojo bg-rojo-claro"
+                                    ? "border-rojo bg-rojo-claro animar-sacudida"
                                     : "opacity-60";
                             return (
                                 <div key={o.id} className={"tarjeta flex items-center gap-3 " + clase}>
@@ -116,7 +119,9 @@ export default async function Pregunta({ params }) {
                                         {"ABCD"[i]}
                                     </span>
                                     <span className="flex-1">{o.texto}</span>
-                                    {o.esCorrecta && <span className="font-extrabold text-primario-oscuro">✓</span>}
+                                    {o.esCorrecta && (
+                                        <span className="font-extrabold text-primario-oscuro">✓</span>
+                                    )}
                                     {elegida && !o.esCorrecta && (
                                         <span className="font-extrabold text-rojo-oscuro">✗</span>
                                     )}
@@ -127,7 +132,7 @@ export default async function Pregunta({ params }) {
 
                     <div
                         className={
-                            "mt-6 rounded-2xl p-5 " +
+                            "animar-entrada mt-6 rounded-2xl p-5 " +
                             (respuesta.acierto
                                 ? "bg-primario-claro text-primario-oscuro"
                                 : "bg-rojo-claro text-rojo-oscuro")
@@ -144,14 +149,16 @@ export default async function Pregunta({ params }) {
                         <p className="whitespace-pre-line">{pregunta.explicacion}</p>
                     </div>
 
-                    <Link
-                        href="/pregunta"
-                        className={
-                            "boton boton-ancho mt-4 " + (respuesta.acierto ? "" : "boton-rojo")
-                        }
-                    >
-                        Continuar
-                    </Link>
+                    <div className="sticky bottom-0 -mx-6 mt-4 border-t-2 border-borde bg-white p-4">
+                        <Link
+                            href="/pregunta"
+                            className={
+                                "boton boton-ancho " + (respuesta.acierto ? "" : "boton-rojo")
+                            }
+                        >
+                            Continuar
+                        </Link>
+                    </div>
                 </div>
             )}
         </main>

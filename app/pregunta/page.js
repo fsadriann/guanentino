@@ -41,7 +41,7 @@ export default async function Preguntas() {
                 </div>
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="animar-lista flex flex-col gap-3">
                 {areas.map((area, i) => {
                     const pregunta = delDia[i];
                     const estilo = estiloArea(area.nombre);
