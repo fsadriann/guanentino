@@ -14,7 +14,7 @@ export default async function Docente() {
             <h1 className="mb-1 text-2xl font-bold">Panel del docente</h1>
             <p className="mb-4 opacity-70">Preguntas en el banco {total}</p>
 
-            <nav className="mb-6 flex gap-4 text-blue-500 underline">
+            <nav className="mb-6 flex flex-wrap gap-4 text-blue-500 underline">
                 <Link href="/docente/preguntas">Ver banco de preguntas</Link>
                 <Link href="/docente/estudiantes">Ver estudiantes</Link>
                 <Link href="/docente/importar">Importar preguntas</Link>

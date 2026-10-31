@@ -1,34 +1,42 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { registrar } from "./actions";
-import Link from "next/link";
 
 export default function Registro() {
     const [estado, accion, pendiente] = useActionState(registrar, null);
 
     return (
-        <main className="mx-auto max-w-md p-6">
-            <h1 className="mb-4 text-2xl font-bold">Crear cuenta</h1>
+        <main className="mx-auto max-w-sm p-6">
+            <h1 className="mb-6 text-center text-2xl font-extrabold">Crear cuenta</h1>
             <form action={accion} className="flex flex-col gap-3">
-                <input name="usuario" placeholder="Usuario" className="rounded border p-2" required />
-                <input name="nombre" placeholder="Nombre" className="rounded border p-2" required />
-                <input name="apellido" placeholder="Apellido" className="rounded border p-2" required />
-                <input name="correo" type="email" placeholder="Correo" className="rounded border p-2" required />
-                <input name="clave" type="password" placeholder="Clave (mínimo 8 caracteres)" className="rounded border p-2" required />
-                <input name="colegio" placeholder="Colegio (opcional)" className="rounded border p-2" />
-                {estado?.error && <p className="text-red-600">{estado.error}</p>}
-                <p className="text-sm opacity-70">
+                <input name="usuario" placeholder="Usuario" className="campo" required />
+                <div className="grid grid-cols-2 gap-3">
+                    <input name="nombre" placeholder="Nombre" className="campo" required />
+                    <input name="apellido" placeholder="Apellido" className="campo" required />
+                </div>
+                <input name="correo" type="email" placeholder="Correo" className="campo" required />
+                <input name="clave" type="password" placeholder="Clave (mínimo 8 caracteres)" className="campo" required />
+                <input name="colegio" placeholder="Colegio (opcional)" className="campo" />
+                {estado?.error && <p className="mensaje-error">{estado.error}</p>}
+                <p className="text-sm text-gris">
                     Al crear tu cuenta aceptas la{" "}
-                    <Link href="/privacidad" className="underline">
+                    <Link href="/privacidad" className="font-extrabold text-azul">
                         política de privacidad
                     </Link>
                     .
                 </p>
-                <button disabled={pendiente} className="rounded bg-blue-600 p-2 text-white">
+                <button disabled={pendiente} className="boton boton-ancho">
                     {pendiente ? "Creando..." : "Registrarme"}
                 </button>
             </form>
+            <p className="mt-6 text-center text-sm text-gris">
+                ¿Ya tienes cuenta?{" "}
+                <Link href="/login" className="font-extrabold text-azul">
+                    Inicia sesión
+                </Link>
+            </p>
         </main>
     );
 }

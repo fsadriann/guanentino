@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { auth } from "../auth";
+import NavEnlaces from "./NavEnlaces";
 
 export default async function Navbar() {
     const sesion = await auth();
@@ -7,27 +8,26 @@ export default async function Navbar() {
 
     const enlaces = sesion
         ? [
-            ["/pregunta", "Pregunta del día"],
+            ["/pregunta", "Preguntas"],
             ["/ranking", "Ranking"],
-            ["/perfil", "Mi perfil"],
+            ["/perfil", "Perfil"],
             ...(esDocente ? [["/docente", "Docente"]] : []),
         ]
         : [
-            ["/login", "Iniciar sesión"],
-            ["/registro", "Registrarme"],
+            ["/login", "Entrar"],
+            ["/registro", "Registro"],
         ];
 
     return (
-        <header className="border-b">
-            <nav className="mx-auto flex max-w-3xl flex-wrap items-center gap-4 p-4">
-                <Link href={sesion ? "/pregunta" : "/"} className="mr-auto font-bold">
-                    Guanentino Responda
+        <header className="sticky top-0 z-10 border-b-2 border-borde bg-white">
+            <nav className="mx-auto flex max-w-3xl flex-wrap items-center gap-2 px-4 py-3">
+                <Link
+                    href={sesion ? "/pregunta" : "/"}
+                    className="mr-auto text-xl font-extrabold text-primario"
+                >
+                    Guanentino
                 </Link>
-                {enlaces.map(([ruta, texto]) => (
-                    <Link key={ruta} href={ruta} className="hover:underline">
-                        {texto}
-                    </Link>
-                ))}
+                <NavEnlaces enlaces={enlaces} />
             </nav>
         </header>
     );

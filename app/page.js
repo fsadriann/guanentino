@@ -7,17 +7,19 @@ export default async function Inicio() {
   if (sesion) redirect("/pregunta");
 
   return (
-    <main className="mx-auto max-w-xl p-6 text-center">
-      <h1 className="mb-2 text-3xl font-bold">Guanentino Responda</h1>
-      <p className="mb-6 opacity-70">
-        Una pregunta al día para prepararte para las pruebas Saber 11.
+    <main className="mx-auto flex max-w-md flex-col items-center gap-6 p-8 text-center">
+      <h1 className="text-4xl font-extrabold text-primario">
+        Guanentino Responda
+      </h1>
+      <p className="text-lg text-gris">
+        Una pregunta al día en cada área para prepararte para las pruebas Saber 11.
       </p>
-      <div className="flex justify-center gap-4">
-        <Link href="/login" className="rounded bg-blue-600 px-4 py-2 text-white">
-          Iniciar sesión
+      <div className="flex w-full flex-col gap-3">
+        <Link href="/registro" className="boton boton-ancho">
+          Empezar
         </Link>
-        <Link href="/registro" className="rounded border px-4 py-2">
-          Crear cuenta
+        <Link href="/login" className="boton boton-secundario boton-ancho">
+          Ya tengo cuenta
         </Link>
       </div>
     </main>

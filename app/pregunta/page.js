@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { exigirSesion } from "../../lib/permisos";
 import { prisma } from "../../lib/prisma";
+import { estiloArea } from "../../lib/areas";
 import { preguntaDelDia } from "../../services/preguntas";
 
 export default async function Preguntas() {
@@ -16,21 +17,69 @@ export default async function Preguntas() {
     });
     const porPregunta = new Map(respuestas.map((r) => [r.preguntaId, r]));
 
+    const disponibles = ids.length;
+    const hechas = respuestas.length;
+    const porcentaje = disponibles ? Math.round((hechas / disponibles) * 100) : 0;
+
     return (
         <main className="mx-auto max-w-xl p-6">
-            <h1 className="mb-1 text-2xl font-bold">Preguntas del día</h1>
-            <p className="mb-4 opacity-70">Elige un área para responder</p>
+            <h1 className="text-2xl font-extrabold">Preguntas del día</h1>
+            <p className="mb-5 text-gris">Elige un área y responde</p>
+
+            <div className="mb-6">
+                <div className="mb-1 flex justify-between text-sm font-extrabold text-gris">
+                    <span>Progreso de hoy</span>
+                    <span>
+                        {hechas} de {disponibles}
+                    </span>
+                </div>
+                <div className="h-4 overflow-hidden rounded-full bg-borde">
+                    <div
+                        className="h-full rounded-full bg-primario"
+                        style={{ width: porcentaje + "%" }}
+                    />
+                </div>
+            </div>
 
             <div className="flex flex-col gap-3">
                 {areas.map((area, i) => {
                     const pregunta = delDia[i];
+                    const estilo = estiloArea(area.nombre);
                     const respuesta = pregunta ? porPregunta.get(pregunta.id) : null;
+
+                    const contenido = (
+                        <>
+                            <span
+                                className={
+                                    "flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-b-4 text-2xl " +
+                                    estilo.circulo
+                                }
+                            >
+                                {estilo.emoji}
+                            </span>
+                            <span className="flex-1">
+                                <span className="block text-lg font-extrabold">{area.nombre}</span>
+                                {!pregunta ? (
+                                    <span className="text-sm text-gris">Pronto habrá preguntas</span>
+                                ) : !respuesta ? (
+                                    <span className="text-sm font-extrabold text-azul">EMPEZAR</span>
+                                ) : respuesta.acierto ? (
+                                    <span className="text-sm font-extrabold text-primario-oscuro">
+                                        ✓ CORRECTA
+                                    </span>
+                                ) : (
+                                    <span className="text-sm font-extrabold text-rojo-oscuro">
+                                        ✗ FALLASTE
+                                    </span>
+                                )}
+                            </span>
+                        </>
+                    );
 
                     if (!pregunta) {
                         return (
-                            <div key={area.id} className="rounded border p-4 opacity-50">
-                                <p className="font-bold">{area.nombre}</p>
-                                <p className="text-sm">Todavía no hay preguntas</p>
+                            <div key={area.id} className="tarjeta flex items-center gap-4 opacity-50">
+                                {contenido}
                             </div>
                         );
                     }
@@ -39,16 +88,9 @@ export default async function Preguntas() {
                         <Link
                             key={area.id}
                             href={"/pregunta/" + area.id}
-                            className="rounded border p-4 hover:bg-white/5"
+                            className="tarjeta flex items-center gap-4"
                         >
-                            <p className="font-bold">{area.nombre}</p>
-                            <p className="text-sm opacity-70">
-                                {!respuesta
-                                    ? "Pendiente"
-                                    : respuesta.acierto
-                                        ? "Respondida, acertaste"
-                                        : "Respondida, fallaste"}
-                            </p>
+                            {contenido}
                         </Link>
                     );
                 })}
