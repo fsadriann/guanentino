@@ -7,7 +7,12 @@ export default function BotonTema() {
     const [oscuro, setOscuro] = useState(false);
 
     useEffect(() => {
-        setOscuro(document.documentElement.dataset.tema === "oscuro");
+        function leer() {
+            setOscuro(document.documentElement.dataset.tema === "oscuro");
+        }
+        leer();
+        window.addEventListener("tema-cambiado", leer);
+        return () => window.removeEventListener("tema-cambiado", leer);
     }, []);
 
     function cambiar() {
@@ -16,7 +21,7 @@ export default function BotonTema() {
         try {
             localStorage.setItem("tema", nuevo);
         } catch { }
-        setOscuro(!oscuro);
+        window.dispatchEvent(new Event("tema-cambiado"));
     }
 
     return (

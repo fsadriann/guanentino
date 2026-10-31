@@ -1,4 +1,5 @@
 import { Medal, Star } from "lucide-react";
+import Avatar from "../../components/Avatar";
 import { exigirSesion } from "../../lib/permisos";
 import { topRanking } from "../../services/ranking";
 
@@ -25,14 +26,14 @@ export default async function Ranking() {
                             <div
                                 key={f.id}
                                 className={
-                                    "tarjeta flex items-center gap-4 " +
+                                    "tarjeta flex items-center gap-3 " +
                                     (soyYo ? "border-azul bg-azul-claro" : "")
                                 }
                             >
-                                <span className="flex w-10 justify-center text-2xl font-extrabold text-gris">
+                                <span className="flex w-9 justify-center text-xl font-extrabold text-gris">
                                     {f.posicion <= 3 ? (
                                         <Medal
-                                            size={32}
+                                            size={30}
                                             strokeWidth={2.5}
                                             className={coloresMedalla[f.posicion - 1]}
                                         />
@@ -40,6 +41,12 @@ export default async function Ranking() {
                                         f.posicion
                                     )}
                                 </span>
+                                <Avatar
+                                    icono={f.avatarIcono}
+                                    color={f.avatarColor}
+                                    inicial={f.usuario.charAt(0).toUpperCase()}
+                                    size={44}
+                                />
                                 <span className="flex-1">
                                     <span className="block font-extrabold">
                                         {f.usuario}

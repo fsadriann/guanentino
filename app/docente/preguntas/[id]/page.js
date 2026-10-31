@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { prisma } from "../../../../lib/prisma";
 import { exigirDocente } from "../../../../lib/permisos";
 import Formulario from "./formulario";
+import EnlaceVolver from "../../../../components/EnlaceVolver";
 
 export default async function Editar({ params }) {
     await exigirDocente();
@@ -24,9 +25,7 @@ export default async function Editar({ params }) {
 
     return (
         <main className="mx-auto max-w-xl p-6">
-            <Link href="/docente/preguntas" className="text-sm font-extrabold text-azul">
-                ← Banco de preguntas
-            </Link>
+            <EnlaceVolver href="/docente/preguntas">Banco de preguntas</EnlaceVolver>
             <h1 className="my-4 text-2xl font-extrabold">Editar pregunta</h1>
             <Formulario
                 pregunta={pregunta}

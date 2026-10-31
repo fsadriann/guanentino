@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CircleCheck, Flame, Star, Trophy } from "lucide-react";
+import { CircleCheck, Flame, Settings, Star, Trophy } from "lucide-react";
 import { signOut } from "../../auth";
+import Avatar from "../../components/Avatar";
 import { exigirSesion } from "../../lib/permisos";
 import { prisma } from "../../lib/prisma";
 import { estadisticasUsuario } from "../../services/estadisticas";
@@ -28,7 +29,11 @@ export default async function Perfil() {
             Icono: Trophy,
             lleno: false,
             titulo: "Posición",
-            valor: stats.posicion ? "#" + stats.posicion : "-",
+            valor: usuario.ocultoEnRanking
+                ? "Oculto"
+                : stats.posicion
+                    ? "#" + stats.posicion
+                    : "-",
             color: "text-morado",
         },
         {
@@ -50,9 +55,12 @@ export default async function Perfil() {
     return (
         <main className="mx-auto max-w-xl p-6">
             <div className="mb-6 flex items-center gap-4">
-                <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-b-4 border-black/25 bg-relleno-azul text-3xl font-extrabold text-white">
-                    {usuario.nombre.charAt(0).toUpperCase()}
-                </span>
+                <Avatar
+                    icono={usuario.avatarIcono}
+                    color={usuario.avatarColor}
+                    inicial={usuario.nombre.charAt(0).toUpperCase()}
+                    size={72}
+                />
                 <div>
                     <h1 className="text-2xl font-extrabold">
                         {usuario.nombre} {usuario.apellido}
@@ -92,8 +100,11 @@ export default async function Perfil() {
                         Panel del docente
                     </Link>
                 )}
-                <Link href="/perfil/clave" className="boton boton-secundario boton-ancho">
-                    Cambiar clave
+                <Link
+                    href="/perfil/configuracion"
+                    className="boton boton-secundario boton-ancho gap-2"
+                >
+                    <Settings size={18} strokeWidth={2.5} /> Configuración
                 </Link>
                 <form
                     action={async () => {

@@ -431,7 +431,7 @@
     background: var(--b-primario);
     border-color: var(--b-primario-sombra);
   }
-  :root[data-tema="oscuro"] .interruptor-bola {
+  :root[data-tema="oscuro"] .interruptor .interruptor-bola {
     transform: translateX(1.625rem);
   }
   :root[data-tema="oscuro"] .icono-sol {
@@ -446,5 +446,33 @@
   .interruptor,
   .interruptor-bola {
     transition: none;
+  }
+}
+
+@layer components {
+  .interruptor-ui {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    width: 3.75rem;
+    height: 2.25rem;
+    padding: 0 3px;
+    border: 2px solid var(--c-borde);
+    border-bottom-width: 4px;
+    border-radius: 9999px;
+    background: var(--c-superficie);
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .interruptor-ui[aria-checked="true"] {
+    background: var(--b-primario);
+    border-color: var(--b-primario-sombra);
+  }
+  .interruptor-ui[aria-checked="true"] .interruptor-bola {
+    transform: translateX(1.625rem);
+  }
+  .interruptor-ui:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }

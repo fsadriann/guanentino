@@ -25,6 +25,9 @@ model Usuario {
   creadoEn   DateTime    @default(now())
   respuestas Respuesta[]
   debeCambiarClave Boolean @default(false)
+  avatarIcono     String?
+  avatarColor     String  @default("azul")
+  ocultoEnRanking Boolean @default(false)
 }
 
 model Area {

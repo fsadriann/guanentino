@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { exigirDocente } from "../../../lib/permisos";
 import Formulario from "./formulario";
+import EnlaceVolver from "../../../components/EnlaceVolver";
 
 const ejemplo = `[
   {
@@ -17,9 +18,7 @@ export default async function Importar() {
 
     return (
         <main className="mx-auto max-w-xl p-6">
-            <Link href="/docente" className="text-sm font-extrabold text-azul">
-                ← Panel del docente
-            </Link>
+            <EnlaceVolver href="/docente">Panel del docente</EnlaceVolver>
             <h1 className="my-4 text-2xl font-extrabold">Importar preguntas</h1>
             <p className="mb-2">
                 Sube un archivo JSON con una lista de preguntas. Si hay un solo error no

@@ -3,6 +3,7 @@ import { prisma } from "../../../lib/prisma";
 import { exigirDocente } from "../../../lib/permisos";
 import { estiloArea } from "../../../lib/areas";
 import Borrar from "./borrar";
+import EnlaceVolver from "../../../components/EnlaceVolver";
 
 export default async function Preguntas() {
     await exigirDocente();
@@ -17,9 +18,7 @@ export default async function Preguntas() {
 
     return (
         <main className="mx-auto max-w-xl p-6">
-            <Link href="/docente" className="text-sm font-extrabold text-azul">
-                ← Panel del docente
-            </Link>
+            <EnlaceVolver href="/docente">Panel del docente</EnlaceVolver>
             <h1 className="mt-3 text-2xl font-extrabold">Banco de preguntas</h1>
             <p className="mb-5 text-gris">{preguntas.length} preguntas</p>
 

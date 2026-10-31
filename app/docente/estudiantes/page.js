@@ -2,6 +2,8 @@ import Link from "next/link";
 import { prisma } from "../../../lib/prisma";
 import { exigirDocente } from "../../../lib/permisos";
 import Reiniciar from "./reiniciar";
+import { Star } from "lucide-react";
+import EnlaceVolver from "../../../components/EnlaceVolver";
 
 export default async function Estudiantes() {
     await exigirDocente();
@@ -27,9 +29,7 @@ export default async function Estudiantes() {
 
     return (
         <main className="mx-auto max-w-xl p-6">
-            <Link href="/docente" className="text-sm font-extrabold text-azul">
-                ← Panel del docente
-            </Link>
+            <EnlaceVolver href="/docente">Panel del docente</EnlaceVolver>
             <h1 className="mt-3 text-2xl font-extrabold">Estudiantes</h1>
             <p className="mb-5 text-gris">{estudiantes.length} registrados</p>
 
@@ -52,11 +52,9 @@ export default async function Estudiantes() {
                                     </p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="font-extrabold text-amarillo-oscuro">
-                                        ⭐ {puntos.get(e.id) ?? 0}
-                                    </p>
-                                    <p className="text-xs text-gris">
-                                        {e._count.respuestas} respondidas
+                                    <p className="flex items-center justify-end gap-1 font-extrabold text-amarillo-oscuro">
+                                        <Star size={16} strokeWidth={2.5} fill="currentColor" />
+                                        {puntos.get(e.id) ?? 0}
                                     </p>
                                 </div>
                             </div>

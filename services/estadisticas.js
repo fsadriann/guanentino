@@ -31,6 +31,7 @@ export async function estadisticasUsuario(usuarioId) {
 
     const grupos = await prisma.respuesta.groupBy({
         by: ["usuarioId"],
+        where: { usuario: { ocultoEnRanking: false } },
         _sum: { puntaje: true },
         orderBy: { _sum: { puntaje: "desc" } },
     });
