@@ -70,3 +70,13 @@ model PreguntaDelDia {
   preguntaId Int
   pregunta   Pregunta @relation(fields: [preguntaId], references: [id])
 }
+
+model IntentoLogin {
+  id      Int      @id @default(autoincrement())
+  usuario String
+  ip      String
+  fecha   DateTime @default(now())
+
+  @@index([usuario, fecha])
+  @@index([ip, fecha])
+}

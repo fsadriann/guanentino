@@ -21,6 +21,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         );
         if (!coincide) return null;
 
+        await prisma.intentoLogin.deleteMany({
+          where: { usuario: encontrado.usuario },
+        });
+
         return { id: String(encontrado.id), name: encontrado.nombre, rol: encontrado.rol };
       },
     }),
