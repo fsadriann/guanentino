@@ -1,13 +1,12 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
-import { auth } from "../../../auth";
+import { notFound } from "next/navigation";
+import { exigirSesion } from "../../../lib/permisos";
 import { prisma } from "../../../lib/prisma";
 import { preguntaDelDia } from "../../../services/preguntas";
 import { responder } from "../actions";
 
 export default async function Pregunta({ params }) {
-    const sesion = await auth();
-    if (!sesion) redirect("/login");
+    const sesion = await exigirSesion();
 
     const { areaId } = await params;
     const id = Number(areaId);

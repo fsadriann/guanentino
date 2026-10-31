@@ -24,7 +24,7 @@ export async function restablecerClave(estadoPrevio, formData) {
     const clave = claveTemporal();
     await prisma.usuario.update({
         where: { id },
-        data: { clave: await bcrypt.hash(clave, 10) },
+        data: { clave: await bcrypt.hash(clave, 10), debeCambiarClave: true },
     });
     return { clave };
 }

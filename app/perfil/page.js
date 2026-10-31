@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { auth, signOut } from "../../auth";
+import { signOut } from "../../auth";
+import { exigirSesion } from "../../lib/permisos";
 import { prisma } from "../../lib/prisma";
 import { estadisticasUsuario } from "../../services/estadisticas";
 
 export default async function Perfil() {
-    const sesion = await auth();
-    if (!sesion) redirect("/login");
+    const sesion = await exigirSesion();
 
     const id = Number(sesion.user.id);
     const usuario = await prisma.usuario.findUnique({ where: { id } });

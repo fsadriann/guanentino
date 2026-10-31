@@ -1,12 +1,10 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { auth } from "../../auth";
+import { exigirSesion } from "../../lib/permisos";
 import { prisma } from "../../lib/prisma";
 import { preguntaDelDia } from "../../services/preguntas";
 
 export default async function Preguntas() {
-    const sesion = await auth();
-    if (!sesion) redirect("/login");
+    const sesion = await exigirSesion();
 
     const areas = await prisma.area.findMany({ orderBy: { id: "asc" } });
     const delDia = await Promise.all(areas.map((a) => preguntaDelDia(a.id)));

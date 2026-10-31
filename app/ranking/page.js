@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 import { auth } from "../../auth";
+import { exigirSesion } from "../../lib/permisos";
 import { topRanking } from "../../services/ranking";
 
 export default async function Ranking() {
-    const sesion = await auth();
-    if (!sesion) redirect("/login");
+    const sesion = await exigirSesion();
 
     const filas = await topRanking(10);
 

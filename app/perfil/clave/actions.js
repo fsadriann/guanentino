@@ -34,7 +34,7 @@ export async function cambiarClave(estadoPrevio, formData) {
 
     await prisma.usuario.update({
         where: { id },
-        data: { clave: await bcrypt.hash(nueva, 10) },
+        data: { clave: await bcrypt.hash(nueva, 10), debeCambiarClave: false },
     });
     return { ok: "Clave cambiada" };
 }

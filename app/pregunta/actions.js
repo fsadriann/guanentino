@@ -9,6 +9,12 @@ export async function responder(formData) {
     const sesion = await auth();
     if (!sesion) return;
 
+    const actual = await prisma.usuario.findUnique({
+        where: { id: Number(sesion.user.id) },
+        select: { debeCambiarClave: true },
+    });
+    if (!actual || actual.debeCambiarClave) return;
+
     const areaId = Number(formData.get("areaId"));
     const opcionId = Number(formData.get("opcionId"));
     if (!Number.isInteger(areaId)) return;
