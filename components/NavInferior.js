@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GraduationCap, ListChecks, Trophy, User } from "lucide-react";
+import { GraduationCap, ListChecks, Trophy, TrendingUp, User } from "lucide-react";
 
 const iconos = {
     preguntas: ListChecks,
     ranking: Trophy,
     perfil: User,
     docente: GraduationCap,
+    progreso: TrendingUp,
 };
 
 export default function NavInferior({ enlaces }) {
@@ -26,7 +27,7 @@ export default function NavInferior({ enlaces }) {
                         key={href}
                         href={href}
                         className={
-                            "flex flex-1 flex-col items-center gap-0.5 py-2 text-xs font-extrabold uppercase " +
+                            "flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-extrabold uppercase " +
                             (activo ? "text-azul" : "text-gris")
                         }
                     >

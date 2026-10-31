@@ -12,6 +12,7 @@ export default async function Navbar() {
         ? [
             ["/pregunta", "Preguntas", "preguntas"],
             ["/ranking", "Ranking", "ranking"],
+            ["/progreso", "Progreso", "progreso"],
             ["/perfil", "Perfil", "perfil"],
             ...(esDocente ? [["/docente", "Docente", "docente"]] : []),
         ]
