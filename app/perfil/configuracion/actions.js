@@ -6,6 +6,8 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "../../../lib/prisma";
 import { exigirSesion } from "../../../lib/permisos";
 import { CLAVES_COLORES, CLAVES_ICONOS } from "../../../lib/avatar";
+import { headers } from "next/headers";
+import { signOut } from "../../../auth";
 
 const esquemaPerfil = z.object({
     nombre: z.string().trim().min(1, "Escribe tu nombre").max(50, "El nombre es muy largo"),
@@ -92,4 +94,49 @@ export async function guardarVisibilidad(visible) {
     revalidatePath("/perfil");
     revalidatePath("/ranking");
     return { ok: true };
+}
+
+export async function eliminarCuenta(estadoPrevio, formData) {
+    const sesion = await exigirSesion();
+    const id = Number(sesion.user.id);
+
+    const confirmacion = String(formData.get("confirmacion") ?? "")
+        .trim()
+        .toUpperCase();
+    const clave = String(formData.get("clave") ?? "");
+    if (confirmacion !== "ELIMINAR") {
+        return { error: "Escribe ELIMINAR para confirmar" };
+    }
+    if (!clave) return { error: "Escribe tu clave actual" };
+
+    const usuario = await prisma.usuario.findUnique({ where: { id } });
+    if (!usuario) return { error: "No se encontró tu cuenta" };
+    if (usuario.rol !== "ESTUDIANTE") {
+        return { error: "Las cuentas de docente no se pueden eliminar desde aquí" };
+    }
+
+    const cabeceras = await headers();
+    const ip = (cabeceras.get("x-forwarded-for") ?? "local").split(",")[0].trim();
+    const desde = new Date(Date.now() - 15 * 60 * 1000);
+    const fallos = await prisma.intentoLogin.count({
+        where: { usuario: usuario.usuario, fecha: { gte: desde } },
+    });
+    if (fallos >= 5) {
+        return { error: "Demasiados intentos fallidos. Espera 15 minutos e intenta de nuevo" };
+    }
+
+    const coincide = await bcrypt.compare(clave, usuario.clave);
+    if (!coincide) {
+        await prisma.intentoLogin.create({ data: { usuario: usuario.usuario, ip } });
+        return { error: "La clave actual no es correcta" };
+    }
+
+    await prisma.$transaction([
+        prisma.respuesta.deleteMany({ where: { usuarioId: id } }),
+        prisma.intentoLogin.deleteMany({ where: { usuario: usuario.usuario } }),
+        prisma.usuario.delete({ where: { id } }),
+    ]);
+
+    revalidatePath("/ranking");
+    await signOut({ redirectTo: "/?cuenta=eliminada" });
 }

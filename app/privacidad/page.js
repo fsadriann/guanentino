@@ -34,7 +34,8 @@ export default function Privacidad() {
                 Los docentes autorizados pueden ver tu nombre, tu usuario, tus puntos
                 y cuántas preguntas has respondido. Los demás estudiantes solo ven tu
                 nombre de usuario y tus puntos en el ranking. Nunca ven tu nombre real
-                ni tu correo.
+                ni tu correo. Si prefieres, puedes dejar de
+                aparecer en el ranking desde tu configuración.
             </p>
 
             <h2 className="mt-6 mb-2 text-xl font-bold">Dónde se guardan</h2>
@@ -54,9 +55,12 @@ export default function Privacidad() {
             <h2 className="mt-6 mb-2 text-xl font-bold">Tus derechos</h2>
             <p>
                 Tú, o tus padres o representantes si eres menor, pueden pedir en
-                cualquier momento conocer los datos que guardamos, corregirlos o
-                pedir que se eliminen. Escribe a [CORREO DE CONTACTO] y responderemos
-                lo antes posible.
+                cualquier momento conocer los datos que guardamos, corregirlos o pedir
+                que se eliminen. Desde la página de configuración de tu cuenta puedes
+                editar tus datos, descargar una copia de ellos y eliminar tu cuenta.
+                Al eliminarla se borran tu perfil, tus respuestas, tus puntos y tu
+                racha. Si no puedes hacerlo tú mismo, escribe a [CORREO DE CONTACTO] y
+                responderemos lo antes posible.
             </p>
 
             <p className="mt-6 text-sm opacity-70">
