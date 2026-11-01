@@ -12,6 +12,7 @@ export async function borrarPregunta(formData) {
     if (respuestas > 0) return;
 
     await prisma.$transaction([
+        prisma.reportePregunta.deleteMany({ where: { preguntaId: id } }),
         prisma.preguntaDelDia.deleteMany({ where: { preguntaId: id } }),
         prisma.opcion.deleteMany({ where: { preguntaId: id } }),
         prisma.pregunta.delete({ where: { id } }),

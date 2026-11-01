@@ -19,6 +19,7 @@ export default function Privacidad() {
                 <li>Nombre de usuario y colegio</li>
                 <li>La clave, guardada cifrada. Nadie puede leerla, ni siquiera los docentes</li>
                 <li>Tus respuestas, tus puntos y tu racha de días</li>
+                <li>Los reportes que envíes sobre las preguntas, con tu comentario</li>
             </ul>
 
             <h2 className="mt-6 mb-2 text-xl font-bold">Para qué los usamos</h2>

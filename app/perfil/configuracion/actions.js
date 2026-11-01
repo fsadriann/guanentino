@@ -135,6 +135,7 @@ export async function eliminarCuenta(estadoPrevio, formData) {
     }
 
     await prisma.$transaction([
+        prisma.reportePregunta.deleteMany({ where: { usuarioId: id } }),
         prisma.respuesta.deleteMany({ where: { usuarioId: id } }),
         prisma.intentoLogin.deleteMany({ where: { usuario: usuario.usuario } }),
         prisma.usuario.delete({ where: { id } }),

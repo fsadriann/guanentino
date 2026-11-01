@@ -28,6 +28,8 @@ model Usuario {
   avatarIcono     String?
   avatarColor     String  @default("azul")
   ocultoEnRanking Boolean @default(false)
+  reportes        ReportePregunta[]
+
 }
 
 model Area {
@@ -46,6 +48,7 @@ model Pregunta {
   opciones    Opcion[]
   respuestas  Respuesta[]
   delDia      PreguntaDelDia[]
+  reportes    ReportePregunta[]
 }
 
 model Opcion {
@@ -88,4 +91,32 @@ model PreguntaDelDia {
   pregunta   Pregunta @relation(fields: [preguntaId], references: [id])
 
   @@id([fecha, areaId])
+}
+
+enum MotivoReporte {
+  RESPUESTA_INCORRECTA
+  ENUNCIADO_CONFUSO
+  ERROR_DE_TEXTO
+  OTRO
+}
+
+enum EstadoReporte {
+  PENDIENTE
+  RESUELTO
+  DESCARTADO
+}
+
+model ReportePregunta {
+  id         Int           @id @default(autoincrement())
+  preguntaId Int
+  usuarioId  Int
+  motivo     MotivoReporte
+  comentario String?
+  estado     EstadoReporte @default(PENDIENTE)
+  fecha      DateTime      @default(now())
+  pregunta   Pregunta      @relation(fields: [preguntaId], references: [id])
+  usuario    Usuario       @relation(fields: [usuarioId], references: [id])
+
+  @@unique([usuarioId, preguntaId])
+  @@index([estado, fecha])
 }

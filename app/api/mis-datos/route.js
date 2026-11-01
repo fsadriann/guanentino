@@ -33,6 +33,12 @@ export async function GET() {
         },
     });
 
+    const reportes = await prisma.reportePregunta.findMany({
+        where: { usuarioId: id },
+        orderBy: { fecha: "asc" },
+        include: { pregunta: { select: { enunciado: true } } },
+    });
+
     const datos = {
         generadoEn: new Date().toISOString(),
         perfil: usuario,
@@ -44,6 +50,13 @@ export async function GET() {
             respuestaCorrecta: r.pregunta.opciones.find((o) => o.esCorrecta)?.texto ?? null,
             acierto: r.acierto,
             puntaje: r.puntaje,
+        })),
+        reportes: reportes.map((r) => ({
+            fecha: r.fecha,
+            pregunta: r.pregunta.enunciado,
+            motivo: r.motivo,
+            comentario: r.comentario,
+            estado: r.estado,
         })),
     };
 

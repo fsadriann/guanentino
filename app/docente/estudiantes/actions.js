@@ -45,6 +45,7 @@ export async function eliminarEstudiante(estadoPrevio, formData) {
     }
 
     await prisma.$transaction([
+        prisma.reportePregunta.deleteMany({ where: { usuarioId: id } }),
         prisma.respuesta.deleteMany({ where: { usuarioId: id } }),
         prisma.intentoLogin.deleteMany({ where: { usuario: objetivo.usuario } }),
         prisma.usuario.delete({ where: { id } }),

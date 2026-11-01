@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Check, X } from "lucide-react";
+import { Check, Flag, X } from "lucide-react";
 import { exigirSesion } from "../../../lib/permisos";
 import { prisma } from "../../../lib/prisma";
 import { estiloArea } from "../../../lib/areas";
 import { separarEnunciado } from "../../../lib/enunciado";
 import { preguntaDelDia } from "../../../services/preguntas";
 import FormularioRespuesta from "./formulario-respuesta";
+import FormularioReporte from "./formulario-reporte";
 
 export default async function Pregunta({ params }) {
     const sesion = await exigirSesion();
@@ -40,6 +41,18 @@ export default async function Pregunta({ params }) {
             },
         },
     });
+
+    const reporte = respuesta
+        ? await prisma.reportePregunta.findUnique({
+            where: {
+                usuarioId_preguntaId: {
+                    usuarioId: Number(sesion.user.id),
+                    preguntaId: pregunta.id,
+                },
+            },
+            select: { id: true },
+        })
+        : null;
 
     const estilo = estiloArea(pregunta.area.nombre);
     const Icono = estilo.Icono;
@@ -142,6 +155,23 @@ export default async function Pregunta({ params }) {
                                 : "Esta vez no sumaste puntos"}
                         </p>
                         <p className="whitespace-pre-line">{pregunta.explicacion}</p>
+                    </div>
+
+                    <div className="mt-4">
+                        {reporte ? (
+                            <p className="flex items-center gap-2 text-sm text-gris">
+                                <Flag size={16} strokeWidth={2.5} /> Ya reportaste esta
+                                pregunta. ¡Gracias!
+                            </p>
+                        ) : (
+                            <details>
+                                <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-extrabold text-gris hover:text-texto [&::-webkit-details-marker]:hidden">
+                                    <Flag size={16} strokeWidth={2.5} /> Reportar un problema con
+                                    esta pregunta
+                                </summary>
+                                <FormularioReporte preguntaId={pregunta.id} />
+                            </details>
+                        )}
                     </div>
 
                     <div className="sticky bottom-0 -mx-6 mt-4 border-t-2 border-borde bg-fondo p-4">
