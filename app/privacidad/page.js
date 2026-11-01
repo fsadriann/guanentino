@@ -1,7 +1,7 @@
 export const metadata = { title: "Política de privacidad" };
 
 const COLEGIO = "Colegio San José de Guanentá";
-const CORREO = "correo@colegio.edu.co";
+const CORREO = "contactenos@colegioguanenta.edu.co";
 const FECHA = "1 de noviembre de 2026";
 
 function Seccion({ titulo, children }) {
@@ -26,7 +26,7 @@ export default function Privacidad() {
             <Seccion titulo="Quién responde por los datos">
                 <p>
                     Guanentino Responda es una plataforma de práctica para las pruebas
-                    Saber 11 de {COLEGIO}. El responsable del tratamiento de los datos es{" "}
+                    Saber 11 del {COLEGIO}. El responsable del tratamiento de los datos es{" "}
                     {COLEGIO}. Para cualquier consulta escribe a{" "}
                     <a href={"mailto:" + CORREO} className="font-extrabold text-azul underline">
                         {CORREO}
