@@ -24,10 +24,10 @@ export default async function Navbar() {
     return (
         <>
             <header className="sticky top-0 z-10 border-b-2 border-borde bg-fondo">
-                <nav className="mx-auto flex max-w-3xl items-center gap-2 px-4 py-3">
+                <nav className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-2 gap-y-1 px-3 py-3 sm:px-4">
                     <Link
                         href={sesion ? "/pregunta" : "/"}
-                        className="mr-auto text-xl font-extrabold text-primario"
+                        className="mr-auto text-lg font-extrabold text-primario sm:text-xl"
                     >
                         Guanentino
                     </Link>

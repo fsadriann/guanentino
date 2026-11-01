@@ -11,6 +11,11 @@ const nunito = Nunito({
 export const metadata = {
   title: "Guanentino Responda",
   description: "Una pregunta al día para prepararte para las pruebas Saber 11",
+  appleWebApp: {
+    capable: true,
+    title: "Guanentino",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport = {

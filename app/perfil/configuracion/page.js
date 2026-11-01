@@ -9,6 +9,7 @@ import FormularioCorreo from "./formulario-correo";
 import InterruptorRanking from "./interruptor-ranking";
 import EnlaceVolver from "../../../components/EnlaceVolver";
 import FormularioEliminar from "./formulario-eliminar";
+import BotonInstalar from "../../../components/BotonInstalar";
 
 export default async function Configuracion() {
     const sesion = await exigirSesion();
@@ -79,6 +80,10 @@ export default async function Configuracion() {
                     <span className="font-extrabold">Cambiar clave</span>
                 </Link>
             </section>      <section className="mb-8">
+                <section className="mb-8">
+                    <h2 className="mb-3 text-xl font-extrabold">Aplicación</h2>
+                    <BotonInstalar />
+                </section>
                 <h2 className="mb-3 text-xl font-extrabold">Tus datos</h2>
                 <div className="flex flex-col gap-3">
                     <a
