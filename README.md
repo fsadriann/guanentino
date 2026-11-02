@@ -188,6 +188,14 @@ Las mismas reglas se usan en el navegador, para avisar en tiempo real, y en el s
 | Clave | De 8 a 64 caracteres, con al menos una letra y un número, sin espacios |
 | Colegio | Opcional. Máximo 100 caracteres |
 
+## Fórmulas e imágenes en las preguntas
+
+Las fórmulas se escriben en LaTeX entre dos signos de dólar, por ejemplo `$$\frac{3}{4}$$`. Si la fórmula va sola en su renglón se muestra grande y centrada. Un solo signo de dólar se trata como texto normal, por eso los montos de dinero no se afectan.
+
+En un archivo JSON las barras invertidas se escriben dobles, por ejemplo `\\frac{3}{4}`.
+
+Cada pregunta puede llevar una imagen en el enunciado. Se reduce a 1200 píxeles de ancho, se guarda en la base de datos como WebP y exige una descripción para quienes no pueden verla. No se aceptan archivos SVG. El importador de preguntas no carga imágenes, se agregan desde la pantalla de edición.
+
 ## Seguridad y privacidad
 
 - Las claves se guardan cifradas con bcrypt
