@@ -9,7 +9,8 @@ import { textoAHtml } from "../../../lib/matematicas";
 import { preguntaDelDia } from "../../../services/preguntas";
 import Texto from "../../../components/Texto";
 import ImagenPregunta from "../../../components/ImagenPregunta";
-import FormularioRespuesta from "./formulario-respuesta";
+import FormularioRespuesta from "../../../components/FormularioRespuesta";
+import { responder } from "../actions";
 import FormularioReporte from "./formulario-reporte";
 
 export default async function Pregunta({ params }) {
@@ -101,7 +102,8 @@ export default async function Pregunta({ params }) {
 
             {!respuesta ? (
                 <FormularioRespuesta
-                    areaId={id}
+                    accion={responder}
+                    campos={{ areaId: id }}
                     opciones={pregunta.opciones.map((o) => ({
                         id: o.id,
                         html: textoAHtml(o.texto, { enLinea: true }),

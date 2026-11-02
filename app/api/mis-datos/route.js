@@ -39,6 +39,12 @@ export async function GET() {
         include: { pregunta: { select: { enunciado: true } } },
     });
 
+    const practicas = await prisma.respuestaPractica.findMany({
+        where: { usuarioId: id },
+        orderBy: { fecha: "asc" },
+        include: { pregunta: { select: { enunciado: true } } },
+    });
+
     const datos = {
         generadoEn: new Date().toISOString(),
         perfil: usuario,
@@ -57,6 +63,11 @@ export async function GET() {
             motivo: r.motivo,
             comentario: r.comentario,
             estado: r.estado,
+        })),
+        practica: practicas.map((r) => ({
+            fecha: r.fecha,
+            pregunta: r.pregunta.enunciado,
+            acierto: r.acierto,
         })),
     };
 

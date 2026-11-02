@@ -31,11 +31,14 @@ export async function reportarPregunta(estadoPrevio, formData) {
     const usuarioId = Number(sesion.user.id);
     const clave = { usuarioId_preguntaId: { usuarioId, preguntaId } };
 
-    const respondida = await prisma.respuesta.findUnique({
-        where: clave,
-        select: { id: true },
-    });
-    if (!respondida) {
+    const [diaria, practica] = await Promise.all([
+        prisma.respuesta.findUnique({ where: clave, select: { id: true } }),
+        prisma.respuestaPractica.findFirst({
+            where: { usuarioId, preguntaId },
+            select: { id: true },
+        }),
+    ]);
+    if (!diaria && !practica) {
         return { error: "Solo puedes reportar preguntas que ya respondiste" };
     }
 

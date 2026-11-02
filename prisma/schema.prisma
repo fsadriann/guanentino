@@ -29,7 +29,7 @@ model Usuario {
   avatarColor     String  @default("azul")
   ocultoEnRanking Boolean @default(false)
   reportes        ReportePregunta[]
-
+  practicas       RespuestaPractica[]
 }
 
 model Area {
@@ -52,6 +52,7 @@ model Pregunta {
   imagenId    Int?
   imagenAlt   String?
   imagen      Imagen? @relation(fields: [imagenId], references: [id])
+  practicas   RespuestaPractica[]
 }
 
 model Opcion {
@@ -132,4 +133,18 @@ model Imagen {
   alto      Int
   creadoEn  DateTime   @default(now())
   preguntas Pregunta[]
+}
+
+model RespuestaPractica {
+  id         Int      @id @default(autoincrement())
+  usuarioId  Int
+  preguntaId Int
+  opcionId   Int
+  acierto    Boolean
+  fecha      DateTime @default(now())
+  usuario    Usuario  @relation(fields: [usuarioId], references: [id])
+  pregunta   Pregunta @relation(fields: [preguntaId], references: [id])
+
+  @@index([usuarioId, fecha])
+  @@index([usuarioId, preguntaId])
 }

@@ -41,6 +41,7 @@ export default function Privacidad() {
                     <li>Nombre de usuario y colegio, si lo escribes</li>
                     <li>La clave, guardada cifrada. Nadie puede leerla, ni siquiera los docentes</li>
                     <li>Tus respuestas, tus puntos y tu racha de días</li>
+                    <li>Tus respuestas en la práctica libre</li>
                     <li>El ícono y el color que elijas para tu avatar</li>
                     <li>Si decides aparecer o no en el ranking</li>
                     <li>Los reportes que envíes sobre las preguntas, con tu comentario</li>

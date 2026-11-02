@@ -16,6 +16,7 @@ export async function borrarPregunta(formData) {
     if (!pregunta || pregunta._count.respuestas > 0) return;
 
     const operaciones = [
+        prisma.respuestaPractica.deleteMany({ where: { preguntaId: id } }),
         prisma.reportePregunta.deleteMany({ where: { preguntaId: id } }),
         prisma.preguntaDelDia.deleteMany({ where: { preguntaId: id } }),
         prisma.opcion.deleteMany({ where: { preguntaId: id } }),

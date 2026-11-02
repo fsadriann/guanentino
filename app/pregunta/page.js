@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { Check, PartyPopper, X } from "lucide-react";
 import { exigirSesion } from "../../lib/permisos";
 import { prisma } from "../../lib/prisma";
 import { estiloArea } from "../../lib/areas";
 import { preguntaDelDia } from "../../services/preguntas";
+import { Check, Dumbbell, PartyPopper, X } from "lucide-react";
 
 export default async function Preguntas() {
     const sesion = await exigirSesion();
@@ -50,8 +50,12 @@ export default async function Preguntas() {
                         <p className="font-extrabold">¡Terminaste las preguntas de hoy!</p>
                         <p className="text-sm">
                             Mañana habrá preguntas nuevas.{" "}
+                            <Link href="/practica" className="underline">
+                                Sigue con la práctica libre
+                            </Link>{" "}
+                            o{" "}
                             <Link href="/ranking" className="underline">
-                                Mira el ranking
+                                mira el ranking
                             </Link>
                         </p>
                     </div>
@@ -113,6 +117,17 @@ export default async function Preguntas() {
                     );
                 })}
             </div>
+            <Link href="/practica" className="tarjeta mt-6 flex items-center gap-4">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-azul-claro text-azul">
+                    <Dumbbell size={24} strokeWidth={2.5} />
+                </span>
+                <span>
+                    <span className="block text-lg font-extrabold">Práctica libre</span>
+                    <span className="text-sm text-gris">
+                        Repasa preguntas de días anteriores
+                    </span>
+                </span>
+            </Link>
         </main>
     );
 }

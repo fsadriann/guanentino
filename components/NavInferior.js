@@ -15,7 +15,7 @@ const iconos = {
 export default function NavInferior({ enlaces }) {
     const ruta = usePathname();
 
-    if (/^\/pregunta\/\d+/.test(ruta)) return null;
+    if (/^\/(pregunta\/\d+|practica\/)/.test(ruta)) return null;
 
     return (
         <nav className="fixed inset-x-0 bottom-0 z-10 flex border-t-2 border-borde bg-fondo md:hidden">
