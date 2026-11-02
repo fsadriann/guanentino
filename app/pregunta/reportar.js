@@ -53,7 +53,6 @@ export async function reportarPregunta(estadoPrevio, formData) {
         return { error: "No se pudo enviar el reporte. Intenta de nuevo" };
     }
 
-    revalidatePath("/pregunta", "layout");
     revalidatePath("/docente");
     revalidatePath("/docente/reportes");
     return { ok: "Gracias, tu reporte fue enviado" };

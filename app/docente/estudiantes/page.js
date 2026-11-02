@@ -62,7 +62,7 @@ export default async function Estudiantes() {
                                 </div>
                             </div>
                             <div className="mt-3 flex flex-col gap-3 border-t-2 border-borde pt-3">
-                                <Reiniciar usuarioId={e.id} />
+                                <Reiniciar usuarioId={e.id} nombre={e.nombre + " " + e.apellido} />
                                 <Eliminar usuarioId={e.id} usuario={e.usuario} />
                             </div>
                         </div>

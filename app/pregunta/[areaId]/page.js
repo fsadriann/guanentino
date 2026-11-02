@@ -158,20 +158,10 @@ export default async function Pregunta({ params }) {
                     </div>
 
                     <div className="mt-4">
-                        {reporte ? (
-                            <p className="flex items-center gap-2 text-sm text-gris">
-                                <Flag size={16} strokeWidth={2.5} /> Ya reportaste esta
-                                pregunta. ¡Gracias!
-                            </p>
-                        ) : (
-                            <details>
-                                <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-extrabold text-gris hover:text-texto [&::-webkit-details-marker]:hidden">
-                                    <Flag size={16} strokeWidth={2.5} /> Reportar un problema con
-                                    esta pregunta
-                                </summary>
-                                <FormularioReporte preguntaId={pregunta.id} />
-                            </details>
-                        )}
+                        <FormularioReporte
+                            preguntaId={pregunta.id}
+                            yaReportado={Boolean(reporte)}
+                        />
                     </div>
 
                     <div className="sticky bottom-0 -mx-6 mt-4 border-t-2 border-borde bg-fondo p-4">

@@ -10,6 +10,7 @@ import {
     MENSAJE_BLOQUEO,
     registrarFallo,
 } from "../../../lib/intentos";
+import { validarClave } from "../../../lib/validaciones";
 
 const esquema = z
     .object({
@@ -33,6 +34,8 @@ export async function cambiarClave(estadoPrevio, formData) {
     const id = Number(sesion.user.id);
     const usuario = await prisma.usuario.findUnique({ where: { id } });
     if (!usuario) return { error: "No se encontró tu cuenta" };
+    const errorClave = validarClave(nueva, usuario.usuario);
+    if (errorClave) return { error: errorClave };
 
     if (await estaBloqueado(usuario.usuario)) return { error: MENSAJE_BLOQUEO };
 

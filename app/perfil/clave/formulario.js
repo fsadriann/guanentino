@@ -2,16 +2,69 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import Campo from "../../../components/Campo";
+import Requisitos from "../../../components/Requisitos";
+import { useCampos } from "../../../lib/useCampos";
+import {
+    REGLAS,
+    requisitosClave,
+    validarClave,
+} from "../../../lib/validaciones";
 import { cambiarClave } from "./actions";
 
 export default function Formulario() {
     const [estado, accion, pendiente] = useActionState(cambiarClave, null);
 
+    const { valores, enfocado, propsDe, alEnviar } = useCampos(
+        { actual: "", nueva: "", repetir: "" },
+        (v) => ({
+            actual: v.actual ? null : "Escribe tu clave actual",
+            nueva: validarClave(v.nueva),
+            repetir: !v.repetir
+                ? "Repite la clave nueva"
+                : v.repetir !== v.nueva
+                    ? "Las claves no coinciden"
+                    : null,
+        })
+    );
+
     return (
-        <form action={accion} className="flex flex-col gap-3">
-            <input name="actual" type="password" placeholder="Clave actual" autoComplete="current-password" className="campo" required />
-            <input name="nueva" type="password" placeholder="Clave nueva (mínimo 8 caracteres)" autoComplete="new-password" className="campo" required />
-            <input name="repetir" type="password" placeholder="Repite la clave nueva" autoComplete="new-password" className="campo" required />
+        <form
+            action={accion}
+            onSubmit={alEnviar}
+            noValidate
+            className="flex flex-col gap-4"
+        >
+            <Campo
+                etiqueta="Clave actual"
+                type="password"
+                {...propsDe("actual")}
+                autoComplete="current-password"
+                autoCapitalize="none"
+            />
+
+            <Campo
+                etiqueta="Clave nueva"
+                type="password"
+                {...propsDe("nueva")}
+                maxLength={REGLAS.clave.max}
+                autoComplete="new-password"
+                autoCapitalize="none"
+            >
+                <Requisitos
+                    items={requisitosClave(valores.nueva)}
+                    visible={enfocado === "nueva" || valores.nueva.length > 0}
+                />
+            </Campo>
+
+            <Campo
+                etiqueta="Repite la clave nueva"
+                type="password"
+                {...propsDe("repetir")}
+                maxLength={REGLAS.clave.max}
+                autoComplete="new-password"
+                autoCapitalize="none"
+            />
 
             {estado?.error && <p className="mensaje-error">{estado.error}</p>}
             {estado?.ok && (

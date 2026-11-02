@@ -6,6 +6,12 @@ import Avatar from "../../components/Avatar";
 import { exigirSesion } from "../../lib/permisos";
 import { prisma } from "../../lib/prisma";
 import { estadisticasUsuario } from "../../services/estadisticas";
+import CerrarSesion from "../../components/CerrarSesion";
+
+async function cerrarSesion() {
+    "use server";
+    await signOut({ redirectTo: "/login" });
+}
 
 export default async function Perfil() {
     const sesion = await exigirSesion();
@@ -106,16 +112,7 @@ export default async function Perfil() {
                 >
                     <Settings size={18} strokeWidth={2.5} /> Configuración
                 </Link>
-                <form
-                    action={async () => {
-                        "use server";
-                        await signOut({ redirectTo: "/login" });
-                    }}
-                >
-                    <button className="boton boton-secundario boton-ancho text-rojo">
-                        Cerrar sesión
-                    </button>
-                </form>
+                <CerrarSesion accion={cerrarSesion} />
             </div>
         </main>
     );
