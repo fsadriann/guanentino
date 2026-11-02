@@ -1,7 +1,11 @@
 "use client";
 
 import { useActionState } from "react";
+import CampoImagen from "../../../../components/CampoImagen";
+import VistaPrevia from "../../../../components/VistaPrevia";
 import { editarPregunta } from "./actions";
+
+const EJEMPLO = "$$\\frac{3}{4}$$";
 
 export default function Formulario({ pregunta, areas, bloqueada }) {
     const [estado, accion, pendiente] = useActionState(editarPregunta, null);
@@ -25,6 +29,11 @@ export default function Formulario({ pregunta, areas, bloqueada }) {
                 className="campo"
                 rows={5}
                 required
+            />
+
+            <CampoImagen
+                actualId={pregunta.imagenId}
+                actualAlt={pregunta.imagenAlt ?? ""}
             />
 
             {pregunta.opciones.map((o, i) => (
@@ -62,6 +71,13 @@ export default function Formulario({ pregunta, areas, bloqueada }) {
                 rows={3}
                 required
             />
+
+            <p className="text-sm text-gris">
+                Para escribir una fórmula ponla entre dos signos de dólar, por ejemplo{" "}
+                <code className="font-mono">{EJEMPLO}</code>.
+            </p>
+
+            <VistaPrevia />
 
             {estado?.error && <p className="mensaje-error">{estado.error}</p>}
             {estado?.ok && <p className="mensaje-ok">{estado.ok}</p>}

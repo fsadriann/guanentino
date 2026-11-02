@@ -1,10 +1,12 @@
 import Link from "next/link";
-import { Check, Pencil } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { prisma } from "../../../lib/prisma";
 import { exigirDocente } from "../../../lib/permisos";
 import { estiloArea } from "../../../lib/areas";
 import { separarEnunciado } from "../../../lib/enunciado";
+import { textoPlano } from "../../../lib/matematicas";
 import EnlaceVolver from "../../../components/EnlaceVolver";
+import RevisionPregunta from "../../../components/RevisionPregunta";
 import { resolverReportes } from "./actions";
 
 const etiquetas = {
@@ -48,7 +50,10 @@ export default async function Reportes() {
             <p className="mb-5 text-gris">
                 {lista.length === 0
                     ? "No hay reportes pendientes"
-                    : lista.length + (lista.length === 1 ? " pregunta con reportes" : " preguntas con reportes")}
+                    : lista.length +
+                    (lista.length === 1
+                        ? " pregunta con reportes"
+                        : " preguntas con reportes")}
                 {atendidos > 0 && " · " + atendidos + " ya atendidos"}
             </p>
 
@@ -61,8 +66,10 @@ export default async function Reportes() {
                     {lista.map(({ pregunta, reportes: rs }) => {
                         const estilo = estiloArea(pregunta.area.nombre);
                         const Icono = estilo.Icono;
-                        const partes = separarEnunciado(pregunta.enunciado);
-                        const resumen = partes.pregunta.replace(/\s+/g, " ");
+                        const resumen = textoPlano(
+                            separarEnunciado(pregunta.enunciado).pregunta,
+                            140
+                        );
 
                         const conteo = {};
                         for (const r of rs) conteo[r.motivo] = (conteo[r.motivo] ?? 0) + 1;
@@ -84,9 +91,7 @@ export default async function Reportes() {
                                     </span>
                                 </div>
 
-                                <p className="font-extrabold">
-                                    {resumen.length > 140 ? resumen.slice(0, 140) + "..." : resumen}
-                                </p>
+                                <p className="font-extrabold">{resumen}</p>
 
                                 <ul className="mt-3 flex flex-wrap gap-2">
                                     {Object.entries(conteo).map(([motivo, n]) => (
@@ -114,39 +119,10 @@ export default async function Reportes() {
 
                                 <details className="mt-3">
                                     <summary className="cursor-pointer text-sm font-extrabold text-azul">
-                                        Ver opciones y explicación
+                                        Ver pregunta completa
                                     </summary>
-                                    <div className="mt-3 flex flex-col gap-2">
-                                        {partes.texto && (
-                                            <p className="whitespace-pre-line rounded-2xl bg-superficie p-3 text-sm">
-                                                {partes.texto}
-                                            </p>
-                                        )}
-                                        <p className="whitespace-pre-line font-extrabold">
-                                            {partes.pregunta}
-                                        </p>
-                                        {pregunta.opciones.map((o, i) => (
-                                            <div
-                                                key={o.id}
-                                                className={
-                                                    "tarjeta flex items-center gap-3 py-2 text-sm " +
-                                                    (o.esCorrecta ? "border-acierto bg-acierto-claro" : "")
-                                                }
-                                            >
-                                                <span className="font-extrabold text-gris">{"ABCD"[i]}</span>
-                                                <span className="flex-1">{o.texto}</span>
-                                                {o.esCorrecta && (
-                                                    <Check
-                                                        size={18}
-                                                        strokeWidth={3}
-                                                        className="shrink-0 text-acierto-oscuro"
-                                                    />
-                                                )}
-                                            </div>
-                                        ))}
-                                        <p className="whitespace-pre-line rounded-2xl bg-superficie p-3 text-sm">
-                                            {pregunta.explicacion}
-                                        </p>
+                                    <div className="mt-3">
+                                        <RevisionPregunta pregunta={pregunta} />
                                     </div>
                                 </details>
 

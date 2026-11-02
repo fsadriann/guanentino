@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Check, Flag, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { exigirSesion } from "../../../lib/permisos";
 import { prisma } from "../../../lib/prisma";
 import { estiloArea } from "../../../lib/areas";
 import { separarEnunciado } from "../../../lib/enunciado";
+import { textoAHtml } from "../../../lib/matematicas";
 import { preguntaDelDia } from "../../../services/preguntas";
+import Texto from "../../../components/Texto";
+import ImagenPregunta from "../../../components/ImagenPregunta";
 import FormularioRespuesta from "./formulario-respuesta";
 import FormularioReporte from "./formulario-reporte";
 
@@ -80,24 +83,29 @@ export default async function Pregunta({ params }) {
 
             {partes.instruccion && (
                 <p className="mb-2 text-sm font-extrabold uppercase tracking-wide text-gris">
-                    {partes.instruccion}
+                    <Texto>{partes.instruccion}</Texto>
                 </p>
             )}
 
             {partes.texto && (
-                <div className="tarjeta mb-4 whitespace-pre-line bg-superficie leading-relaxed">
-                    {partes.texto}
+                <div className="tarjeta mb-4 bg-superficie leading-relaxed">
+                    <Texto>{partes.texto}</Texto>
                 </div>
             )}
 
-            <h1 className="mb-6 whitespace-pre-line text-2xl font-extrabold">
-                {partes.pregunta}
+            <ImagenPregunta id={pregunta.imagenId} alt={pregunta.imagenAlt} />
+
+            <h1 className="mb-6 text-2xl font-extrabold">
+                <Texto>{partes.pregunta}</Texto>
             </h1>
 
             {!respuesta ? (
                 <FormularioRespuesta
                     areaId={id}
-                    opciones={pregunta.opciones.map((o) => ({ id: o.id, texto: o.texto }))}
+                    opciones={pregunta.opciones.map((o) => ({
+                        id: o.id,
+                        html: textoAHtml(o.texto, { enLinea: true }),
+                    }))}
                 />
             ) : (
                 <div>
@@ -118,7 +126,9 @@ export default async function Pregunta({ params }) {
                                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-2 border-borde bg-fondo text-sm font-extrabold text-gris">
                                         {"ABCD"[i]}
                                     </span>
-                                    <span className="flex-1">{o.texto}</span>
+                                    <span className="flex-1">
+                                        <Texto enLinea>{o.texto}</Texto>
+                                    </span>
                                     {o.esCorrecta && (
                                         <Check
                                             size={22}
@@ -154,7 +164,9 @@ export default async function Pregunta({ params }) {
                                 ? "Ganaste " + respuesta.puntaje + " puntos"
                                 : "Esta vez no sumaste puntos"}
                         </p>
-                        <p className="whitespace-pre-line">{pregunta.explicacion}</p>
+                        <p>
+                            <Texto>{pregunta.explicacion}</Texto>
+                        </p>
                     </div>
 
                     <div className="mt-4">

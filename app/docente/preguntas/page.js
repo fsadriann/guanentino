@@ -4,6 +4,7 @@ import { exigirDocente } from "../../../lib/permisos";
 import { estiloArea } from "../../../lib/areas";
 import Borrar from "./borrar";
 import EnlaceVolver from "../../../components/EnlaceVolver";
+import { textoPlano } from "../../../lib/matematicas";
 
 export default async function Preguntas() {
     await exigirDocente();
@@ -31,7 +32,7 @@ export default async function Preguntas() {
                     {preguntas.map((p) => {
                         const estilo = estiloArea(p.area.nombre);
                         const Icono = estilo.Icono;
-                        const resumen = p.enunciado.replace(/\s+/g, " ");
+                        const resumen = textoPlano(p.enunciado);
                         const respuestas = p._count.respuestas;
                         return (
                             <div key={p.id} className="tarjeta">

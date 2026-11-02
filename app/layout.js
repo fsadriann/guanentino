@@ -1,5 +1,6 @@
 import { Nunito } from "next/font/google";
 import "./globals.css";
+import "katex/dist/katex.min.css";
 import Navbar from "../components/Navbar";
 import Link from "next/link";
 

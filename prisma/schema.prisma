@@ -49,6 +49,9 @@ model Pregunta {
   respuestas  Respuesta[]
   delDia      PreguntaDelDia[]
   reportes    ReportePregunta[]
+  imagenId    Int?
+  imagenAlt   String?
+  imagen      Imagen? @relation(fields: [imagenId], references: [id])
 }
 
 model Opcion {
@@ -119,4 +122,14 @@ model ReportePregunta {
 
   @@unique([usuarioId, preguntaId])
   @@index([estado, fecha])
+}
+
+model Imagen {
+  id        Int        @id @default(autoincrement())
+  datos     Bytes
+  tipo      String
+  ancho     Int
+  alto      Int
+  creadoEn  DateTime   @default(now())
+  preguntas Pregunta[]
 }

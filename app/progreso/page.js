@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { Check, ChevronDown, Lightbulb, X } from "lucide-react";
+import { ChevronDown, Lightbulb } from "lucide-react";
 import { exigirSesion } from "../../lib/permisos";
 import { prisma } from "../../lib/prisma";
 import { estiloArea } from "../../lib/areas";
 import { separarEnunciado } from "../../lib/enunciado";
+import { textoPlano } from "../../lib/matematicas";
+import RevisionPregunta from "../../components/RevisionPregunta";
 
 function formatearFecha(fecha) {
     return new Date(fecha).toLocaleDateString("es-CO", {
@@ -169,7 +171,10 @@ export default async function Progreso({ searchParams }) {
                     <p className="mb-3 text-gris">
                         {totalErrores === 0
                             ? "No has fallado ninguna pregunta"
-                            : totalErrores + (totalErrores === 1 ? " pregunta fallada" : " preguntas falladas")}
+                            : totalErrores +
+                            (totalErrores === 1
+                                ? " pregunta fallada"
+                                : " preguntas falladas")}
                     </p>
 
                     <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
@@ -201,8 +206,10 @@ export default async function Progreso({ searchParams }) {
                             {errores.map((r) => {
                                 const estilo = estiloArea(r.pregunta.area.nombre);
                                 const Icono = estilo.Icono;
-                                const partes = separarEnunciado(r.pregunta.enunciado);
-                                const resumen = partes.pregunta.replace(/\s+/g, " ");
+                                const resumen = textoPlano(
+                                    separarEnunciado(r.pregunta.enunciado).pregunta,
+                                    110
+                                );
                                 return (
                                     <details key={r.id} className="tarjeta group">
                                         <summary className="flex cursor-pointer list-none items-start gap-3 [&::-webkit-details-marker]:hidden">
@@ -218,11 +225,7 @@ export default async function Progreso({ searchParams }) {
                                                 <span className="block text-sm text-gris">
                                                     {r.pregunta.area.nombre} · {formatearFecha(r.fecha)}
                                                 </span>
-                                                <span className="block font-extrabold">
-                                                    {resumen.length > 110
-                                                        ? resumen.slice(0, 110) + "..."
-                                                        : resumen}
-                                                </span>
+                                                <span className="block font-extrabold">{resumen}</span>
                                             </span>
                                             <ChevronDown
                                                 size={20}
@@ -232,59 +235,10 @@ export default async function Progreso({ searchParams }) {
                                         </summary>
 
                                         <div className="mt-4 border-t-2 border-borde pt-4">
-                                            {partes.texto && (
-                                                <div className="tarjeta mb-3 whitespace-pre-line bg-superficie text-sm leading-relaxed">
-                                                    {partes.texto}
-                                                </div>
-                                            )}
-                                            <p className="mb-3 whitespace-pre-line font-extrabold">
-                                                {partes.pregunta}
-                                            </p>
-
-                                            <div className="flex flex-col gap-2">
-                                                {r.pregunta.opciones.map((o, i) => {
-                                                    const elegida = o.id === r.opcionId;
-                                                    const clase = o.esCorrecta
-                                                        ? "border-acierto bg-acierto-claro"
-                                                        : elegida
-                                                            ? "border-rojo bg-rojo-claro"
-                                                            : "opacity-60";
-                                                    return (
-                                                        <div
-                                                            key={o.id}
-                                                            className={"tarjeta flex items-center gap-3 py-3 " + clase}
-                                                        >
-                                                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border-2 border-borde bg-fondo text-sm font-extrabold text-gris">
-                                                                {"ABCD"[i]}
-                                                            </span>
-                                                            <span className="flex-1">{o.texto}</span>
-                                                            {o.esCorrecta && (
-                                                                <Check
-                                                                    size={20}
-                                                                    strokeWidth={3}
-                                                                    className="shrink-0 text-acierto-oscuro"
-                                                                />
-                                                            )}
-                                                            {elegida && !o.esCorrecta && (
-                                                                <X
-                                                                    size={20}
-                                                                    strokeWidth={3}
-                                                                    className="shrink-0 text-rojo-oscuro"
-                                                                />
-                                                            )}
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-
-                                            <div className="mt-3 rounded-2xl bg-superficie p-4">
-                                                <p className="mb-1 text-sm font-extrabold uppercase tracking-wide text-gris">
-                                                    Explicación
-                                                </p>
-                                                <p className="whitespace-pre-line">
-                                                    {r.pregunta.explicacion}
-                                                </p>
-                                            </div>
+                                            <RevisionPregunta
+                                                pregunta={r.pregunta}
+                                                opcionElegidaId={r.opcionId}
+                                            />
                                         </div>
                                     </details>
                                 );

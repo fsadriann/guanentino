@@ -5,6 +5,7 @@ import { exigirDocente } from "../../../lib/permisos";
 import { estiloArea } from "../../../lib/areas";
 import { separarEnunciado } from "../../../lib/enunciado";
 import EnlaceVolver from "../../../components/EnlaceVolver";
+import { textoPlano } from "../../../lib/matematicas";
 
 const MINIMO_RESPUESTAS = 5;
 
@@ -67,10 +68,7 @@ export default async function Dificultad() {
                         if (!pregunta) return null;
                         const estilo = estiloArea(pregunta.area.nombre);
                         const Icono = estilo.Icono;
-                        const resumen = separarEnunciado(pregunta.enunciado).pregunta.replace(
-                            /\s+/g,
-                            " "
-                        );
+                        const resumen = textoPlano(separarEnunciado(pregunta.enunciado).pregunta);
                         return (
                             <div key={f.preguntaId} className="tarjeta">
                                 <span

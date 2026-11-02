@@ -30,7 +30,10 @@ function Contenido({ opciones, seleccion, setSeleccion }) {
                             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border-2 border-borde text-sm font-extrabold text-gris">
                                 {"ABCD"[i]}
                             </span>
-                            <span>{o.texto}</span>
+                            <span
+                                className="whitespace-pre-line"
+                                dangerouslySetInnerHTML={{ __html: o.html }}
+                            />
                         </div>
                     </label>
                 ))}
