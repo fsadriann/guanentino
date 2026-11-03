@@ -26,7 +26,7 @@ export default async function Pregunta({ params }) {
     const pregunta = await preguntaDelDia(id);
     if (!pregunta) {
         return (
-            <main className="mx-auto max-w-xl p-6">
+            <main className="animar-entrada mx-auto max-w-xl p-6">
                 <Link href="/pregunta" aria-label="Volver" className="text-gris">
                     <X size={26} strokeWidth={3} />
                 </Link>
