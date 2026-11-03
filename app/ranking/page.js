@@ -1,4 +1,5 @@
-import { Medal, Star } from "lucide-react";
+import Link from "next/link";
+import { Medal, Star, Trophy } from "lucide-react";
 import Avatar from "../../components/Avatar";
 import { exigirSesion } from "../../lib/permisos";
 import { posicionUsuario, topRanking } from "../../services/ranking";
@@ -37,19 +38,40 @@ export default async function Ranking() {
             )}
 
             {filas.length === 0 ? (
-                <div className="tarjeta text-center text-gris">
-                    Todavía nadie ha respondido. ¡Sé el primero!
+                <div className="tarjeta text-center">
+                    <Trophy
+                        size={42}
+                        strokeWidth={2}
+                        className="mx-auto mb-3 text-amarillo-oscuro"
+                    />
+                    <p className="font-extrabold">El ranking comienza contigo</p>
+                    <p className="mt-1 text-sm text-gris">
+                        Responde una pregunta para aparecer aquí y sumar tus primeros puntos.
+                    </p>
+                    <Link href="/pregunta" className="boton mt-4">
+                        Responder una pregunta
+                    </Link>
                 </div>
             ) : (
                 <div className="animar-lista flex flex-col gap-3">
                     {filas.map((f) => {
                         const soyYo = String(f.id) === sesion.user.id;
+                        const clasePosicion =
+                            f.posicion === 1
+                                ? "border-amarillo"
+                                : f.posicion === 2
+                                    ? "border-gris"
+                                    : f.posicion === 3
+                                        ? "border-naranja"
+                                        : "";
                         return (
                             <div
                                 key={f.id}
                                 className={
                                     "tarjeta flex items-center gap-3 " +
-                                    (soyYo ? "border-azul bg-azul-claro" : "")
+                                    (soyYo
+                                        ? "border-azul bg-azul-claro"
+                                        : clasePosicion)
                                 }
                             >
                                 <span className="flex w-9 justify-center text-xl font-extrabold text-gris">
@@ -67,7 +89,7 @@ export default async function Ranking() {
                                     icono={f.avatarIcono}
                                     color={f.avatarColor}
                                     inicial={f.usuario.charAt(0).toUpperCase()}
-                                    size={44}
+                                    size={f.posicion <= 3 ? 48 : 44}
                                 />
                                 <span className="flex-1">
                                     <span className="block font-extrabold">
