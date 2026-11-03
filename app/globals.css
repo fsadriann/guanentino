@@ -160,6 +160,21 @@
 }
 
 @layer components {
+  .landing-seccion {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100svh;
+    isolation: isolate;
+  }
+
+  .landing-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
   .boton {
     --c: var(--b-primario);
     --co: var(--b-primario-sombra);
