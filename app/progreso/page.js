@@ -17,6 +17,16 @@ function formatearFecha(fecha) {
     });
 }
 
+function diaBogota(fecha) {
+    return fecha.toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
+}
+
+function restarDias(fecha, dias) {
+    const resultado = new Date(fecha + "T00:00:00.000Z");
+    resultado.setUTCDate(resultado.getUTCDate() - dias);
+    return resultado.toISOString().slice(0, 10);
+}
+
 export default async function Progreso({ searchParams }) {
     const sesion = await exigirSesion();
     const usuarioId = Number(sesion.user.id);
@@ -29,7 +39,11 @@ export default async function Progreso({ searchParams }) {
         prisma.area.findMany({ orderBy: { id: "asc" } }),
         prisma.respuesta.findMany({
             where: { usuarioId },
-            select: { acierto: true, pregunta: { select: { areaId: true } } },
+            select: {
+                acierto: true,
+                fecha: true,
+                pregunta: { select: { areaId: true } },
+            },
         }),
     ]);
     const preguntasDelDia = await Promise.all(areas.map((a) => preguntaDelDia(a.id)));
@@ -44,6 +58,17 @@ export default async function Progreso({ searchParams }) {
     const aciertosTotal = respuestas.filter((r) => r.acierto).length;
     const totalErrores = total - aciertosTotal;
     const porcentajeTotal = total ? Math.round((aciertosTotal / total) * 100) : 0;
+    const hoy = diaBogota(new Date());
+    const inicioSemana = restarDias(hoy, 6);
+    const respuestasSemana = respuestas.filter((r) => {
+        const dia = diaBogota(r.fecha);
+        return dia >= inicioSemana && dia <= hoy;
+    });
+    const aciertosSemana = respuestasSemana.filter((r) => r.acierto).length;
+    const porcentajeSemana = respuestasSemana.length
+        ? Math.round((aciertosSemana / respuestasSemana.length) * 100)
+        : 0;
+    const diasActivos = new Set(respuestasSemana.map((r) => diaBogota(r.fecha))).size;
 
     const porArea = areas.map((a) => {
         const delArea = respuestas.filter((r) => r.pregunta.areaId === a.id);
@@ -108,6 +133,40 @@ export default async function Progreso({ searchParams }) {
                     </p>
                 </div>
             )}
+
+            <div className="tarjeta mb-6">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                    <div>
+                        <h2 className="text-lg font-extrabold">Esta semana</h2>
+                        <p className="text-sm text-gris">Tu constancia en los últimos 7 días</p>
+                    </div>
+                    <span className="text-2xl font-extrabold text-primario">
+                        {diasActivos}/7
+                    </span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-center sm:grid-cols-3">
+                    <div className="rounded-xl bg-superficie p-3">
+                        <p className="text-xl font-extrabold">{respuestasSemana.length}</p>
+                        <p className="text-xs font-extrabold uppercase tracking-wide text-gris">
+                            Respondidas
+                        </p>
+                    </div>
+                    <div className="rounded-xl bg-superficie p-3">
+                        <p className="text-xl font-extrabold text-acierto-oscuro">
+                            {porcentajeSemana}%
+                        </p>
+                        <p className="text-xs font-extrabold uppercase tracking-wide text-gris">
+                            De aciertos
+                        </p>
+                    </div>
+                    <div className="col-span-2 rounded-xl bg-superficie p-3 sm:col-span-1">
+                        <p className="text-xl font-extrabold">{diasActivos}</p>
+                        <p className="text-xs font-extrabold uppercase tracking-wide text-gris">
+                            Días activos
+                        </p>
+                    </div>
+                </div>
+            </div>
 
             {total === 0 ? (
                 <div className="tarjeta text-center">
