@@ -18,7 +18,7 @@ export default function NavInferior({ enlaces }) {
     if (/^\/(pregunta\/\d+|practica\/)/.test(ruta)) return null;
 
     return (
-        <nav className="fixed inset-x-0 bottom-0 z-10 flex border-t-2 border-borde bg-fondo md:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-10 flex min-h-16 border-t-2 border-borde bg-fondo pb-[env(safe-area-inset-bottom)] md:hidden">
             {enlaces.map(([href, texto, icono]) => {
                 const activo = ruta === href || ruta.startsWith(href + "/");
                 const Icono = iconos[icono];
@@ -30,7 +30,7 @@ export default function NavInferior({ enlaces }) {
                         aria-current={activo ? "page" : undefined}
                         title={texto}
                         className={
-                            "flex flex-1 items-center justify-center py-2 text-gris transition-colors duration-200 " +
+                            "flex flex-1 items-center justify-center py-3 text-gris transition-colors duration-200 " +
                             (activo ? "text-azul" : "hover:text-azul")
                         }
                     >
