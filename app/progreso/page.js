@@ -1,22 +1,11 @@
 import Link from "next/link";
-import { ChevronDown, Lightbulb } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 import { exigirSesion } from "../../lib/permisos";
 import { prisma } from "../../lib/prisma";
 import { estiloArea } from "../../lib/areas";
-import { separarEnunciado } from "../../lib/enunciado";
-import { textoPlano } from "../../lib/matematicas";
-import RevisionPregunta from "../../components/RevisionPregunta";
 import BarraProgreso from "../../components/BarraProgreso";
 import Racha from "../../components/Racha";
 import { preguntaDelDia } from "../../services/preguntas";
-
-function formatearFecha(fecha) {
-    return new Date(fecha).toLocaleDateString("es-CO", {
-        day: "numeric",
-        month: "short",
-        timeZone: "America/Bogota",
-    });
-}
 
 function diaBogota(fecha) {
     return fecha.toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
@@ -56,13 +45,9 @@ function calcularRacha(respuestas, hoy) {
     return { actual, mejor, respondioHoy };
 }
 
-export default async function Progreso({ searchParams }) {
+export default async function Progreso() {
     const sesion = await exigirSesion();
     const usuarioId = Number(sesion.user.id);
-
-    const { area } = await searchParams;
-    const areaFiltro = Number(area);
-    const hayFiltro = Number.isInteger(areaFiltro) && areaFiltro > 0;
 
     const [areas, respuestas] = await Promise.all([
         prisma.area.findMany({ orderBy: { id: "asc" } }),
@@ -84,7 +69,6 @@ export default async function Progreso({ searchParams }) {
         : 0;
 
     const total = respuestas.length;
-    const totalErrores = total - respuestas.filter((r) => r.acierto).length;
     const hoy = diaBogota(new Date());
     const inicioSemana = restarDias(hoy, 6);
     const respuestasSemana = respuestas.filter((r) => {
@@ -116,30 +100,6 @@ export default async function Progreso({ searchParams }) {
             ? comparables.reduce((a, b) => (b.porcentaje < a.porcentaje ? b : a))
             : null;
     const mostrarConsejo = masDebil && masDebil.porcentaje < 70;
-
-    const errores = await prisma.respuesta.findMany({
-        where: {
-            usuarioId,
-            acierto: false,
-            ...(hayFiltro ? { pregunta: { areaId: areaFiltro } } : {}),
-        },
-        orderBy: { fecha: "desc" },
-        take: 30,
-        include: {
-            pregunta: {
-                include: { area: true, opciones: { orderBy: { id: "asc" } } },
-            },
-        },
-    });
-
-    const chips = [
-        { href: "/progreso", texto: "Todas", activo: !hayFiltro },
-        ...areas.map((a) => ({
-            href: "/progreso?area=" + a.id,
-            texto: a.nombre,
-            activo: hayFiltro && areaFiltro === a.id,
-        })),
-    ];
 
     return (
         <main className="mx-auto max-w-xl p-6">
@@ -194,6 +154,22 @@ export default async function Progreso({ searchParams }) {
                 hoy={hoy}
             />
 
+            {mostrarConsejo && (
+                <div className="tarjeta mb-6 flex items-start gap-3 border-amarillo">
+                    <Lightbulb
+                        size={22}
+                        strokeWidth={2.5}
+                        className="mt-0.5 shrink-0 text-amarillo-oscuro"
+                    />
+                    <p>
+                        Por ahora tu área más difícil es{" "}
+                        <span className="font-extrabold">{masDebil.area.nombre}</span>{" "}
+                        con {masDebil.porcentaje}% de aciertos. Vale la pena practicar
+                        un poco más esa área.
+                    </p>
+                </div>
+            )}
+
             {total === 0 ? (
                 <div className="tarjeta text-center">
                     <p className="mb-3 text-gris">
@@ -243,118 +219,6 @@ export default async function Progreso({ searchParams }) {
                         })}
                     </div>
 
-                    {mostrarConsejo && (
-                        <div className="tarjeta mb-6 flex items-start gap-3 border-amarillo">
-                            <Lightbulb
-                                size={22}
-                                strokeWidth={2.5}
-                                className="mt-0.5 shrink-0 text-amarillo-oscuro"
-                            />
-                            <p>
-                                Por ahora tu área más difícil es{" "}
-                                <span className="font-extrabold">{masDebil.area.nombre}</span>{" "}
-                                con {masDebil.porcentaje}% de aciertos. Vale la pena repasar
-                                sus errores.
-                            </p>
-                        </div>
-                    )}
-
-                    <div className="mb-3 flex items-end justify-between gap-3">
-                        <div>
-                            <h2 className="mb-1 text-xl font-extrabold">Para repasar</h2>
-                            <p className="text-gris">
-                                {totalErrores === 0
-                                    ? "No has fallado ninguna pregunta"
-                                    : totalErrores +
-                                    (totalErrores === 1
-                                        ? " pregunta fallada"
-                                        : " preguntas falladas")}
-                            </p>
-                        </div>
-                        {totalErrores > 0 && (
-                            <Link
-                                href={hayFiltro ? "/practica/" + areaFiltro : "/practica/todas"}
-                                className="shrink-0 text-sm font-extrabold text-azul hover:underline"
-                            >
-                                Practicar ahora
-                            </Link>
-                        )}
-                    </div>
-
-                    <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
-                        {chips.map((c) => (
-                            <Link
-                                key={c.href}
-                                href={c.href}
-                                scroll={false}
-                                className={
-                                    "shrink-0 rounded-full border-2 px-4 py-1.5 text-sm font-extrabold " +
-                                    (c.activo
-                                        ? "border-azul bg-azul-claro text-azul"
-                                        : "border-borde text-gris hover:bg-superficie")
-                                }
-                            >
-                                {c.texto}
-                            </Link>
-                        ))}
-                    </div>
-
-                    {errores.length === 0 ? (
-                        <div className="tarjeta text-center text-gris">
-                            {hayFiltro
-                                ? "No tienes errores en esta área."
-                                : "¡Sin errores por repasar!"}
-                        </div>
-                    ) : (
-                        <div className="flex flex-col gap-3">
-                            {errores.map((r) => {
-                                const estilo = estiloArea(r.pregunta.area.nombre);
-                                const Icono = estilo.Icono;
-                                const resumen = textoPlano(
-                                    separarEnunciado(r.pregunta.enunciado).pregunta,
-                                    110
-                                );
-                                return (
-                                    <details key={r.id} className="tarjeta group">
-                                        <summary className="flex cursor-pointer list-none items-start gap-3 [&::-webkit-details-marker]:hidden">
-                                            <span
-                                                className={
-                                                    "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white " +
-                                                    estilo.fondo
-                                                }
-                                            >
-                                                <Icono size={14} strokeWidth={2.5} />
-                                            </span>
-                                            <span className="flex-1">
-                                                <span className="block text-sm text-gris">
-                                                    {r.pregunta.area.nombre} · {formatearFecha(r.fecha)}
-                                                </span>
-                                                <span className="block font-extrabold">{resumen}</span>
-                                            </span>
-                                            <ChevronDown
-                                                size={20}
-                                                strokeWidth={3}
-                                                className="mt-1 shrink-0 text-gris group-open:rotate-180"
-                                            />
-                                        </summary>
-
-                                        <div className="mt-4 border-t-2 border-borde pt-4">
-                                            <RevisionPregunta
-                                                pregunta={r.pregunta}
-                                                opcionElegidaId={r.opcionId}
-                                            />
-                                        </div>
-                                    </details>
-                                );
-                            })}
-                        </div>
-                    )}
-
-                    {totalErrores > 30 && !hayFiltro && (
-                        <p className="mt-3 text-center text-sm text-gris">
-                            Se muestran las 30 más recientes.
-                        </p>
-                    )}
                 </>
             )}
         </main>
