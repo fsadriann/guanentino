@@ -68,8 +68,6 @@ export default async function Progreso({ searchParams }) {
     const porcentajeSemana = respuestasSemana.length
         ? Math.round((aciertosSemana / respuestasSemana.length) * 100)
         : 0;
-    const diasActivos = new Set(respuestasSemana.map((r) => diaBogota(r.fecha))).size;
-
     const porArea = areas.map((a) => {
         const delArea = respuestas.filter((r) => r.pregunta.areaId === a.id);
         const aciertos = delArea.filter((r) => r.acierto).length;
@@ -140,11 +138,8 @@ export default async function Progreso({ searchParams }) {
                         <h2 className="text-lg font-extrabold">Esta semana</h2>
                         <p className="text-sm text-gris">Tu constancia en los últimos 7 días</p>
                     </div>
-                    <span className="text-2xl font-extrabold text-primario">
-                        {diasActivos}/7
-                    </span>
                 </div>
-                <div className="grid grid-cols-2 gap-3 text-center sm:grid-cols-3">
+                <div className="grid grid-cols-2 gap-3 text-center">
                     <div className="rounded-xl bg-superficie p-3">
                         <p className="text-xl font-extrabold">{respuestasSemana.length}</p>
                         <p className="text-xs font-extrabold uppercase tracking-wide text-gris">
@@ -157,12 +152,6 @@ export default async function Progreso({ searchParams }) {
                         </p>
                         <p className="text-xs font-extrabold uppercase tracking-wide text-gris">
                             De aciertos
-                        </p>
-                    </div>
-                    <div className="col-span-2 rounded-xl bg-superficie p-3 sm:col-span-1">
-                        <p className="text-xl font-extrabold">{diasActivos}</p>
-                        <p className="text-xs font-extrabold uppercase tracking-wide text-gris">
-                            Días activos
                         </p>
                     </div>
                 </div>
@@ -180,23 +169,6 @@ export default async function Progreso({ searchParams }) {
                 </div>
             ) : (
                 <>
-                    <div className="mb-6 grid grid-cols-2 gap-3">
-                        <div className="tarjeta">
-                            <p className="text-2xl font-extrabold">{total}</p>
-                            <p className="text-sm font-extrabold uppercase tracking-wide text-gris">
-                                Respondidas
-                            </p>
-                        </div>
-                        <div className="tarjeta">
-                            <p className="text-2xl font-extrabold text-acierto-oscuro">
-                                {porcentajeTotal}%
-                            </p>
-                            <p className="text-sm font-extrabold uppercase tracking-wide text-gris">
-                                De aciertos
-                            </p>
-                        </div>
-                    </div>
-
                     <h2 className="mb-3 text-xl font-extrabold">Por área</h2>
                     <div className="animar-lista mb-6 flex flex-col gap-3">
                         {porArea.map((p) => {
@@ -250,15 +222,27 @@ export default async function Progreso({ searchParams }) {
                         </div>
                     )}
 
-                    <h2 className="mb-1 text-xl font-extrabold">Para repasar</h2>
-                    <p className="mb-3 text-gris">
-                        {totalErrores === 0
-                            ? "No has fallado ninguna pregunta"
-                            : totalErrores +
-                            (totalErrores === 1
-                                ? " pregunta fallada"
-                                : " preguntas falladas")}
-                    </p>
+                    <div className="mb-3 flex items-end justify-between gap-3">
+                        <div>
+                            <h2 className="mb-1 text-xl font-extrabold">Para repasar</h2>
+                            <p className="text-gris">
+                                {totalErrores === 0
+                                    ? "No has fallado ninguna pregunta"
+                                    : totalErrores +
+                                    (totalErrores === 1
+                                        ? " pregunta fallada"
+                                        : " preguntas falladas")}
+                            </p>
+                        </div>
+                        {totalErrores > 0 && (
+                            <Link
+                                href={hayFiltro ? "/practica/" + areaFiltro : "/practica/todas"}
+                                className="shrink-0 text-sm font-extrabold text-azul hover:underline"
+                            >
+                                Practicar ahora
+                            </Link>
+                        )}
+                    </div>
 
                     <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
                         {chips.map((c) => (

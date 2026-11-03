@@ -29,7 +29,8 @@ export default async function Practica({ searchParams }) {
             <h1 className="mt-3 text-2xl font-extrabold">Práctica libre</h1>
             <p className="mb-5 text-gris">
                 Repasa preguntas de días anteriores. La práctica no suma puntos al
-                ranking.
+                ranking. Primero aparecen las que aún no has respondido y luego las
+                que has fallado.
             </p>
 
             {(limite || resumen.llegoAlLimite) && (
