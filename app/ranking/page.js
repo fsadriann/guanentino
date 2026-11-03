@@ -28,7 +28,11 @@ export default async function Ranking() {
                     <span className="flex-1">
                         <span className="block font-extrabold">Tu posición</span>
                         <span className="text-sm text-gris">
-                            Sigue practicando para subir en el ranking.
+                            {miPosicion.diferenciaAnterior > 0
+                                ? "Te separan " +
+                                  miPosicion.diferenciaAnterior +
+                                  " puntos de la posición anterior."
+                                : "Estás empatado en puntos con la posición anterior."}
                         </span>
                     </span>
                     <span className="font-extrabold text-azul-oscuro">

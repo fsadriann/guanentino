@@ -107,6 +107,19 @@ export default async function Inicio({ searchParams }) {
               </Link>
             </div>
 
+            <ul className="mt-7 flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm font-extrabold text-gris md:justify-start">
+              {[
+                "Cinco áreas del examen",
+                "Una pregunta nueva cada día",
+                "Explicación de cada respuesta",
+              ].map((beneficio) => (
+                <li key={beneficio} className="inline-flex items-center gap-1.5">
+                  <CheckCircle2 size={16} className="shrink-0 text-acierto" strokeWidth={2.5} />
+                  {beneficio}
+                </li>
+              ))}
+            </ul>
+
             <EnlaceSuave
               destino="como-funciona"
               className="mt-6 inline-flex items-center gap-1 text-sm font-extrabold text-azul"

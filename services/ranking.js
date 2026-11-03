@@ -39,8 +39,14 @@ export async function posicionUsuario(usuarioId) {
     const indice = grupos.findIndex((g) => g.usuarioId === usuarioId);
     if (indice === -1) return null;
 
+    const puntos = grupos[indice]._sum.puntaje ?? 0;
+    const puntosAnterior =
+        indice > 0 ? grupos[indice - 1]._sum.puntaje ?? 0 : null;
+
     return {
         posicion: indice + 1,
-        puntos: grupos[indice]._sum.puntaje ?? 0,
+        puntos,
+        diferenciaAnterior:
+            puntosAnterior === null ? null : Math.max(0, puntosAnterior - puntos),
     };
 }
