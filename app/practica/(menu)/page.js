@@ -1,26 +1,39 @@
 import Link from "next/link";
 import { Shuffle } from "lucide-react";
-import { exigirSesion } from "../../lib/permisos";
-import { prisma } from "../../lib/prisma";
-import { estiloArea } from "../../lib/areas";
-import EnlaceVolver from "../../components/EnlaceVolver";
-import { poolTotal, resumenHoy } from "../../services/practica";
+import { exigirSesion } from "../../../lib/permisos";
+import { prisma } from "../../../lib/prisma";
+import { estiloArea } from "../../../lib/areas";
+import EnlaceVolver from "../../../components/EnlaceVolver";
+import { poolTotal, resumenHoy } from "../../../services/practica";
 
 export default async function Practica({ searchParams }) {
     const sesion = await exigirSesion();
     const { limite } = await searchParams;
 
-    const [areas, pool, resumen] = await Promise.all([
+    const [areas, pool, resumen, respuestas] = await Promise.all([
         prisma.area.findMany({ orderBy: { id: "asc" } }),
         poolTotal(),
         resumenHoy(Number(sesion.user.id)),
+        prisma.respuesta.findMany({
+            where: { usuarioId: Number(sesion.user.id), acierto: false },
+            select: { pregunta: { select: { areaId: true } } },
+        }),
     ]);
 
     const conteo = new Map();
     for (const p of pool) conteo.set(p.areaId, (conteo.get(p.areaId) ?? 0) + 1);
+    const fallos = new Map();
+    for (const r of respuestas) {
+        const areaId = r.pregunta.areaId;
+        fallos.set(areaId, (fallos.get(areaId) ?? 0) + 1);
+    }
 
     function texto(n) {
         return n + (n === 1 ? " pregunta" : " preguntas");
+    }
+
+    function textoFallos(n) {
+        return n + " para repasar";
     }
 
     return (
@@ -59,7 +72,11 @@ export default async function Practica({ searchParams }) {
                         </span>
                         <span>
                             <span className="block text-lg font-extrabold">Todas las áreas</span>
-                            <span className="text-sm text-gris">{texto(pool.length)}</span>
+                            <span className="text-sm text-gris">
+                                {texto(pool.length)}
+                                {respuestas.length > 0 &&
+                                    " · " + textoFallos(respuestas.length)}
+                            </span>
                         </span>
                     </Link>
 
@@ -67,6 +84,7 @@ export default async function Practica({ searchParams }) {
                         const estilo = estiloArea(area.nombre);
                         const Icono = estilo.Icono;
                         const cantidad = conteo.get(area.id) ?? 0;
+                        const cantidadFallos = fallos.get(area.id) ?? 0;
 
                         const contenido = (
                             <>
@@ -81,7 +99,12 @@ export default async function Practica({ searchParams }) {
                                 <span>
                                     <span className="block text-lg font-extrabold">{area.nombre}</span>
                                     <span className="text-sm text-gris">
-                                        {cantidad > 0 ? texto(cantidad) : "Aún no hay preguntas"}
+                                        {cantidad > 0
+                                            ? texto(cantidad) +
+                                            (cantidadFallos > 0
+                                                ? " · " + textoFallos(cantidadFallos)
+                                                : "")
+                                            : "Aún no hay preguntas"}
                                     </span>
                                 </span>
                             </>

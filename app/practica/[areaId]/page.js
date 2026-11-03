@@ -64,7 +64,7 @@ export default async function PracticaPregunta({ params, searchParams }) {
         );
         if (siguiente === null) {
             return (
-                <main className="mx-auto max-w-xl p-6">
+                <main className="animar-entrada mx-auto max-w-xl p-6">
                     <Link
                         href="/practica"
                         aria-label="Terminar la práctica"

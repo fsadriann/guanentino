@@ -1,4 +1,4 @@
-import Esqueleto from "../../components/Esqueleto";
+import Esqueleto from "../../../components/Esqueleto";
 
 export default function Cargando() {
     return (
