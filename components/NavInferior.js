@@ -26,20 +26,25 @@ export default function NavInferior({ enlaces }) {
                     <Link
                         key={href}
                         href={href}
+                        aria-label={texto}
+                        aria-current={activo ? "page" : undefined}
+                        title={texto}
                         className={
-                            "flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-extrabold uppercase " +
-                            (activo ? "text-azul" : "text-gris")
+                            "flex flex-1 items-center justify-center py-2 text-gris transition-colors duration-200 " +
+                            (activo ? "text-azul" : "hover:text-azul")
                         }
                     >
                         <span
                             className={
-                                "flex h-9 w-12 items-center justify-center rounded-xl border-2 " +
-                                (activo ? "border-azul bg-azul-claro" : "border-transparent")
+                                "flex h-10 w-12 items-center justify-center rounded-xl border-2 transition duration-200 ease-out " +
+                                (activo
+                                    ? "scale-105 border-azul bg-azul-claro"
+                                    : "border-transparent")
                             }
                         >
                             {Icono && <Icono size={22} strokeWidth={2.5} />}
                         </span>
-                        {texto}
+                        <span className="sr-only">{texto}</span>
                     </Link>
                 );
             })}
