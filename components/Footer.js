@@ -8,7 +8,15 @@ import EnlaceSuave from "./landing/EnlaceSuave";
 export default function Footer() {
   const pathname = usePathname();
 
-  if (pathname !== "/") return null;
+  if (pathname !== "/") {
+    return (
+      <footer className="border-t-2 border-borde p-4 pb-24 text-center text-sm text-gris md:pb-4">
+        <Link href="/privacidad" className="font-bold underline">
+          Política de privacidad
+        </Link>
+      </footer>
+    );
+  }
 
   return (
     <footer className="border-t-2 border-borde bg-superficie pb-20 md:pb-6">
