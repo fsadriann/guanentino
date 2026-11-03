@@ -346,6 +346,16 @@
   }
 }
 
+@keyframes crecer-barra {
+  from {
+    width: var(--desde, 0%);
+  }
+
+  to {
+    width: var(--hasta, 100%);
+  }
+}
+
 .animar-entrada {
   animation: entrar 0.35s ease-out both;
 }
@@ -356,6 +366,10 @@
 
 .animar-sacudida {
   animation: sacudida 0.45s ease-in-out;
+}
+
+.barra-progreso {
+  animation: crecer-barra 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .animar-lista>* {
@@ -387,6 +401,7 @@
   .animar-entrada,
   .animar-rebote,
   .animar-sacudida,
+  .barra-progreso,
   .animar-lista>*,
   .esqueleto {
     animation: none;

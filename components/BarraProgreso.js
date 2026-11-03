@@ -1,8 +1,17 @@
-export default function BarraProgreso({ hechas, total, etiqueta = "Progreso" }) {
+export default function BarraProgreso({
+    hechas,
+    total,
+    etiqueta = "Progreso",
+    desde = null,
+}) {
     if (!total || total <= 0) return null;
 
-    const hechasFinal = Math.min(hechas, total);
+    const hechasFinal = Math.min(Math.max(hechas, 0), total);
     const porcentaje = Math.round((hechasFinal / total) * 100);
+    const desdeFinal =
+        desde === null ? hechasFinal : Math.min(Math.max(desde, 0), hechasFinal);
+    const desdePorcentaje = Math.round((desdeFinal / total) * 100);
+    const anima = desdePorcentaje < porcentaje;
 
     return (
         <div className="mb-6">
@@ -14,8 +23,15 @@ export default function BarraProgreso({ hechas, total, etiqueta = "Progreso" }) 
             </div>
             <div className="h-4 overflow-hidden rounded-full bg-borde">
                 <div
-                    className="h-full rounded-full bg-primario"
-                    style={{ width: porcentaje + "%" }}
+                    className={
+                        "h-full rounded-full bg-primario" +
+                        (anima ? " barra-progreso" : "")
+                    }
+                    style={{
+                        width: porcentaje + "%",
+                        "--desde": desdePorcentaje + "%",
+                        "--hasta": porcentaje + "%",
+                    }}
                 />
             </div>
         </div>

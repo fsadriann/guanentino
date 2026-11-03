@@ -99,6 +99,7 @@ export default async function ResultadoPractica({ params, searchParams }) {
                 hechas={progreso.respondidas}
                 total={progreso.total}
                 etiqueta="Progreso de la práctica"
+                desde={progreso.respondidas - 1}
             />
 
             <div
