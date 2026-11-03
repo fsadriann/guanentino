@@ -13,15 +13,36 @@ function inicioDeHoy() {
     return new Date(fechaHoy().getTime() + 5 * 60 * 60 * 1000);
 }
 
-export async function poolPractica(areaId = null) {
+function filtroPasadas(areaId) {
     const hoy = fechaHoy();
+    return {
+        ...(areaId ? { areaId } : {}),
+        AND: [
+            { delDia: { some: { fecha: { lt: hoy } } } },
+            { delDia: { none: { fecha: { gte: hoy } } } },
+        ],
+    };
+}
+
+export async function poolTotal(areaId = null) {
+    return prisma.pregunta.findMany({
+        where: filtroPasadas(areaId),
+        select: { id: true, areaId: true },
+    });
+}
+
+export async function poolPractica(usuarioId, areaId = null, sesion = null) {
+    const filtro = filtroPasadas(areaId);
+    if (!sesion) {
+        return prisma.pregunta.findMany({
+            where: filtro,
+            select: { id: true, areaId: true },
+        });
+    }
     return prisma.pregunta.findMany({
         where: {
-            ...(areaId ? { areaId } : {}),
-            AND: [
-                { delDia: { some: { fecha: { lt: hoy } } } },
-                { delDia: { none: { fecha: { gte: hoy } } } },
-            ],
+            ...filtro,
+            practicas: { none: { usuarioId, sesion } },
         },
         select: { id: true, areaId: true },
     });
@@ -40,12 +61,17 @@ export async function resumenHoy(usuarioId) {
     return { total, aciertos, llegoAlLimite: total >= LIMITE_DIARIO };
 }
 
-export async function siguientePreguntaId(usuarioId, areaId = null) {
-    const pool = await poolPractica(areaId);
-    const ids = pool.map((p) => p.id);
+export async function siguientePreguntaId(
+    usuarioId,
+    areaId = null,
+    sesion = null,
+    excluirId = null
+) {
+    const pool = await poolPractica(usuarioId, areaId, sesion);
+    const ids = pool.map((p) => p.id).filter((id) => id !== excluirId);
     if (ids.length === 0) return null;
 
-    const [diarias, practicas, ultima] = await Promise.all([
+    const [diarias, practicas] = await Promise.all([
         prisma.respuesta.findMany({
             where: { usuarioId, preguntaId: { in: ids } },
             select: { preguntaId: true, acierto: true, fecha: true },
@@ -53,11 +79,6 @@ export async function siguientePreguntaId(usuarioId, areaId = null) {
         prisma.respuestaPractica.findMany({
             where: { usuarioId, preguntaId: { in: ids } },
             select: { preguntaId: true, acierto: true, fecha: true },
-        }),
-        prisma.respuestaPractica.findFirst({
-            where: { usuarioId },
-            orderBy: { fecha: "desc" },
-            select: { preguntaId: true },
         }),
     ]);
 
@@ -67,14 +88,11 @@ export async function siguientePreguntaId(usuarioId, areaId = null) {
         if (!actual || r.fecha > actual.fecha) ultimo.set(r.preguntaId, r);
     }
 
-    const candidatos =
-        ids.length > 1 && ultima ? ids.filter((id) => id !== ultima.preguntaId) : ids;
-
     const prioridad = (id) => {
         const u = ultimo.get(id);
         return !u ? 0 : u.acierto ? 2 : 1;
     };
-    const mejor = Math.min(...candidatos.map(prioridad));
-    const grupo = candidatos.filter((id) => prioridad(id) === mejor);
+    const mejor = Math.min(...ids.map(prioridad));
+    const grupo = ids.filter((id) => prioridad(id) === mejor);
     return grupo[Math.floor(Math.random() * grupo.length)];
 }

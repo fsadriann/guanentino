@@ -5,7 +5,10 @@ import { exigirSesion } from "../../../../lib/permisos";
 import { prisma } from "../../../../lib/prisma";
 import { estiloArea } from "../../../../lib/areas";
 import RevisionPregunta from "../../../../components/RevisionPregunta";
-import { resumenHoy } from "../../../../services/practica";
+import {
+    resumenHoy,
+    siguientePreguntaId,
+} from "../../../../services/practica";
 import FormularioReporte from "../../../pregunta/[areaId]/formulario-reporte";
 
 export default async function ResultadoPractica({ params, searchParams }) {
@@ -33,7 +36,8 @@ export default async function ResultadoPractica({ params, searchParams }) {
             ? destinoTexto
             : "todas";
 
-    const [resumen, reporte] = await Promise.all([
+    const areaId = sigue === "todas" ? null : Number(sigue);
+    const [resumen, reporte, siguiente] = await Promise.all([
         resumenHoy(usuarioId),
         prisma.reportePregunta.findUnique({
             where: {
@@ -41,7 +45,21 @@ export default async function ResultadoPractica({ params, searchParams }) {
             },
             select: { id: true },
         }),
+        siguientePreguntaId(
+            usuarioId,
+            areaId,
+            respuesta.sesion,
+            respuesta.preguntaId
+        ),
     ]);
+
+    const enlaceSiguiente =
+        siguiente === null
+            ? null
+            : "/practica/" +
+              sigue +
+              (respuesta.sesion ? "?s=" + respuesta.sesion + "&p=" : "?p=") +
+              siguiente;
 
     const estilo = estiloArea(respuesta.pregunta.area.nombre);
     const Icono = estilo.Icono;
@@ -99,16 +117,29 @@ export default async function ResultadoPractica({ params, searchParams }) {
                 />
             </div>
 
+            {enlaceSiguiente === null && (
+                <div className="tarjeta mt-4 text-center">
+                    <p className="font-extrabold">
+                        Terminaste las preguntas de esta práctica
+                    </p>
+                    <p className="mt-1 text-sm text-gris">
+                        Vuelve al menú para empezar otra.
+                    </p>
+                </div>
+            )}
+
             <div className="sticky bottom-0 -mx-6 mt-4 flex flex-col gap-2 border-t-2 border-borde bg-fondo p-4">
-                <Link
-                    href={"/practica/" + sigue}
-                    className={
-                        "boton boton-ancho " +
-                        (respuesta.acierto ? "boton-acierto" : "boton-rojo")
-                    }
-                >
-                    Siguiente pregunta
-                </Link>
+                {enlaceSiguiente && (
+                    <Link
+                        href={enlaceSiguiente}
+                        className={
+                            "boton boton-ancho " +
+                            (respuesta.acierto ? "boton-acierto" : "boton-rojo")
+                        }
+                    >
+                        Siguiente pregunta
+                    </Link>
+                )}
                 <Link href="/practica" className="boton boton-secundario boton-ancho">
                     Terminar
                 </Link>

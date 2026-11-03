@@ -4,7 +4,7 @@ import { exigirSesion } from "../../lib/permisos";
 import { prisma } from "../../lib/prisma";
 import { estiloArea } from "../../lib/areas";
 import EnlaceVolver from "../../components/EnlaceVolver";
-import { poolPractica, resumenHoy } from "../../services/practica";
+import { poolTotal, resumenHoy } from "../../services/practica";
 
 export default async function Practica({ searchParams }) {
     const sesion = await exigirSesion();
@@ -12,7 +12,7 @@ export default async function Practica({ searchParams }) {
 
     const [areas, pool, resumen] = await Promise.all([
         prisma.area.findMany({ orderBy: { id: "asc" } }),
-        poolPractica(),
+        poolTotal(),
         resumenHoy(Number(sesion.user.id)),
     ]);
 

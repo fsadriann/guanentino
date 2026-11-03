@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { X } from "lucide-react";
@@ -11,17 +12,21 @@ import ImagenPregunta from "../../../components/ImagenPregunta";
 import FormularioRespuesta from "../../../components/FormularioRespuesta";
 import {
     poolPractica,
+    poolTotal,
     resumenHoy,
     siguientePreguntaId,
 } from "../../../services/practica";
 import { responderPractica } from "../actions";
+
+const UUID =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async function PracticaPregunta({ params, searchParams }) {
     const sesion = await exigirSesion();
     const usuarioId = Number(sesion.user.id);
 
     const { areaId: parametro } = await params;
-    const { p } = await searchParams;
+    const { p, s } = await searchParams;
 
     const todas = parametro === "todas";
     const areaId = todas ? null : Number(parametro);
@@ -37,26 +42,75 @@ export default async function PracticaPregunta({ params, searchParams }) {
     const resumen = await resumenHoy(usuarioId);
     if (resumen.llegoAlLimite) redirect("/practica?limite=1");
 
-    const pool = await poolPractica(areaId);
+    const sesionValida = typeof s === "string" && UUID.test(s);
+    const sesionPractica = sesionValida ? s : randomUUID();
+
+    const pool = await poolPractica(usuarioId, areaId, sesionPractica);
     const ids = pool.map((x) => x.id);
 
     if (ids.length === 0) {
+        const total = await poolTotal(areaId);
+        const yaRespondidas = total.length > 0;
         return (
             <main className="mx-auto max-w-xl p-6">
-                <Link href="/practica" aria-label="Volver" className="text-gris">
+                <Link
+                    href="/practica"
+                    aria-label="Terminar la práctica"
+                    className="text-gris"
+                >
                     <X size={26} strokeWidth={3} />
                 </Link>
-                <div className="tarjeta mt-4 text-center text-gris">
-                    Todavía no hay preguntas para practicar en esta área.
+                <div className="tarjeta mt-4 text-center">
+                    <p className="font-extrabold">
+                        {yaRespondidas
+                            ? "Ya respondiste todas las preguntas de esta práctica"
+                            : "Todavía no hay preguntas para practicar en esta área."}
+                    </p>
+                    {yaRespondidas && (
+                        <p className="mt-1 text-sm text-gris">
+                            Vuelve al menú para empezar otra práctica.
+                        </p>
+                    )}
                 </div>
+                <Link href="/practica" className="boton boton-ancho mt-4">
+                    Terminar
+                </Link>
             </main>
+        );
+    }
+
+    if (!sesionValida) {
+        const pedida = Number(p);
+        const siguiente = ids.includes(pedida)
+            ? pedida
+            : await siguientePreguntaId(usuarioId, areaId, sesionPractica);
+        if (siguiente === null) redirect("/practica");
+        redirect(
+            "/practica/" +
+                parametro +
+                "?s=" +
+                sesionPractica +
+                "&p=" +
+                siguiente
         );
     }
 
     const pedida = Number(p);
     if (!ids.includes(pedida)) {
-        const siguiente = await siguientePreguntaId(usuarioId, areaId);
-        redirect("/practica/" + parametro + "?p=" + siguiente);
+        const siguiente = await siguientePreguntaId(
+            usuarioId,
+            areaId,
+            sesionPractica
+        );
+        if (siguiente === null) redirect("/practica");
+        redirect(
+            "/practica/" +
+                parametro +
+                "?s=" +
+                sesionPractica +
+                "&p=" +
+                siguiente
+        );
     }
 
     const pregunta = await prisma.pregunta.findUnique({
@@ -110,7 +164,11 @@ export default async function PracticaPregunta({ params, searchParams }) {
 
             <FormularioRespuesta
                 accion={responderPractica}
-                campos={{ preguntaId: pregunta.id, destino: parametro }}
+                campos={{
+                    preguntaId: pregunta.id,
+                    destino: parametro,
+                    sesion: sesionPractica,
+                }}
                 opciones={pregunta.opciones.map((o) => ({
                     id: o.id,
                     html: textoAHtml(o.texto, { enLinea: true }),
