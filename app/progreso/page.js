@@ -7,6 +7,7 @@ import { separarEnunciado } from "../../lib/enunciado";
 import { textoPlano } from "../../lib/matematicas";
 import RevisionPregunta from "../../components/RevisionPregunta";
 import BarraProgreso from "../../components/BarraProgreso";
+import Racha from "../../components/Racha";
 import { preguntaDelDia } from "../../services/preguntas";
 
 function formatearFecha(fecha) {
@@ -25,6 +26,34 @@ function restarDias(fecha, dias) {
     const resultado = new Date(fecha + "T00:00:00.000Z");
     resultado.setUTCDate(resultado.getUTCDate() - dias);
     return resultado.toISOString().slice(0, 10);
+}
+
+function calcularRacha(respuestas, hoy) {
+    const dias = [...new Set(respuestas.map((r) => diaBogota(r.fecha)))].sort();
+    if (dias.length === 0) return { actual: 0, mejor: 0, respondioHoy: false };
+
+    const diasSet = new Set(dias);
+    const respondioHoy = diasSet.has(hoy);
+    let inicioActual = respondioHoy ? hoy : restarDias(hoy, 1);
+    let actual = 0;
+
+    while (diasSet.has(inicioActual)) {
+        actual++;
+        inicioActual = restarDias(inicioActual, 1);
+    }
+
+    let mejor = 1;
+    let consecutivos = 1;
+    for (let i = 1; i < dias.length; i++) {
+        if (dias[i - 1] === restarDias(dias[i], 1)) {
+            consecutivos++;
+            mejor = Math.max(mejor, consecutivos);
+        } else {
+            consecutivos = 1;
+        }
+    }
+
+    return { actual, mejor, respondioHoy };
 }
 
 export default async function Progreso({ searchParams }) {
@@ -55,9 +84,7 @@ export default async function Progreso({ searchParams }) {
         : 0;
 
     const total = respuestas.length;
-    const aciertosTotal = respuestas.filter((r) => r.acierto).length;
-    const totalErrores = total - aciertosTotal;
-    const porcentajeTotal = total ? Math.round((aciertosTotal / total) * 100) : 0;
+    const totalErrores = total - respuestas.filter((r) => r.acierto).length;
     const hoy = diaBogota(new Date());
     const inicioSemana = restarDias(hoy, 6);
     const respuestasSemana = respuestas.filter((r) => {
@@ -68,6 +95,8 @@ export default async function Progreso({ searchParams }) {
     const porcentajeSemana = respuestasSemana.length
         ? Math.round((aciertosSemana / respuestasSemana.length) * 100)
         : 0;
+    const racha = calcularRacha(respuestas, hoy);
+    const diasActivos = [...new Set(respuestas.map((r) => diaBogota(r.fecha)))];
     const porArea = areas.map((a) => {
         const delArea = respuestas.filter((r) => r.pregunta.areaId === a.id);
         const aciertos = delArea.filter((r) => r.acierto).length;
@@ -156,6 +185,14 @@ export default async function Progreso({ searchParams }) {
                     </div>
                 </div>
             </div>
+
+            <Racha
+                actual={racha.actual}
+                mejor={racha.mejor}
+                respondioHoy={racha.respondioHoy}
+                diasActivos={diasActivos}
+                hoy={hoy}
+            />
 
             {total === 0 ? (
                 <div className="tarjeta text-center">
