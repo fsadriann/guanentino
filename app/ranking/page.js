@@ -16,12 +16,12 @@ export default async function Ranking() {
     const estaEnTop = filas.some((fila) => fila.id === usuarioId);
 
     return (
-        <main className="mx-auto max-w-xl p-6">
+        <main className="animar-entrada mx-auto max-w-xl p-6">
             <h1 className="text-2xl font-extrabold">Ranking</h1>
             <p className="mb-5 text-gris">Los 10 estudiantes con más puntos</p>
 
             {miPosicion && !estaEnTop && (
-                <div className="tarjeta mb-6 flex items-center gap-3 border-azul bg-azul-claro">
+                <div className="animar-entrada tarjeta mb-6 flex items-center gap-3 border-azul bg-azul-claro">
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-azul font-extrabold text-white">
                         {miPosicion.posicion}
                     </span>
@@ -32,7 +32,8 @@ export default async function Ranking() {
                         </span>
                     </span>
                     <span className="font-extrabold text-azul-oscuro">
-                        {miPosicion.puntos} puntos
+                        <span className="block text-lg">{miPosicion.puntos}</span>
+                        <span className="block text-xs uppercase tracking-wide">puntos</span>
                     </span>
                 </div>
             )}
@@ -108,6 +109,17 @@ export default async function Ranking() {
                             </div>
                         );
                     })}
+                </div>
+            )}
+
+            {filas.length > 0 && (
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                    <Link href="/progreso" className="boton boton-ancho boton-secundario">
+                        Ver mi progreso
+                    </Link>
+                    <Link href="/practica" className="boton boton-ancho boton-azul">
+                        Practicar
+                    </Link>
                 </div>
             )}
         </main>
