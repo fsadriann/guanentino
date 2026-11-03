@@ -53,6 +53,8 @@ model Pregunta {
   imagenAlt   String?
   imagen      Imagen? @relation(fields: [imagenId], references: [id])
   practicas   RespuestaPractica[]
+
+  @@index([areaId])
 }
 
 model Opcion {
@@ -95,6 +97,7 @@ model PreguntaDelDia {
   pregunta   Pregunta @relation(fields: [preguntaId], references: [id])
 
   @@id([fecha, areaId])
+  @@index([preguntaId, fecha])
 }
 
 enum MotivoReporte {

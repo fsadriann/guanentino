@@ -4,6 +4,7 @@ import { prisma } from "../../lib/prisma";
 import { estiloArea } from "../../lib/areas";
 import { preguntaDelDia } from "../../services/preguntas";
 import { Check, Dumbbell, PartyPopper, X } from "lucide-react";
+import BarraProgreso from "../../components/BarraProgreso";
 
 export default async function Preguntas() {
     const sesion = await exigirSesion();
@@ -20,7 +21,6 @@ export default async function Preguntas() {
 
     const disponibles = ids.length;
     const hechas = respuestas.length;
-    const porcentaje = disponibles ? Math.round((hechas / disponibles) * 100) : 0;
     const terminado = disponibles > 0 && hechas === disponibles;
 
     return (
@@ -28,20 +28,11 @@ export default async function Preguntas() {
             <h1 className="text-2xl font-extrabold">Preguntas del día</h1>
             <p className="mb-5 text-gris">Elige un área y responde</p>
 
-            <div className="mb-6">
-                <div className="mb-1 flex justify-between text-sm font-extrabold text-gris">
-                    <span>Progreso de hoy</span>
-                    <span>
-                        {hechas} de {disponibles}
-                    </span>
-                </div>
-                <div className="h-4 overflow-hidden rounded-full bg-borde">
-                    <div
-                        className="h-full rounded-full bg-primario"
-                        style={{ width: porcentaje + "%" }}
-                    />
-                </div>
-            </div>
+            <BarraProgreso
+                hechas={hechas}
+                total={disponibles}
+                etiqueta="Progreso de hoy"
+            />
 
             {terminado && (
                 <div className="mensaje-ok animar-entrada mb-6 flex items-center gap-3">

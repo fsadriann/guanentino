@@ -10,9 +10,10 @@ import { textoAHtml } from "../../../lib/matematicas";
 import Texto from "../../../components/Texto";
 import ImagenPregunta from "../../../components/ImagenPregunta";
 import FormularioRespuesta from "../../../components/FormularioRespuesta";
+import BarraProgreso from "../../../components/BarraProgreso";
 import {
-    poolPractica,
-    poolTotal,
+    buscarPreguntaPractica,
+    progresoPractica,
     resumenHoy,
     siguientePreguntaId,
 } from "../../../services/practica";
@@ -30,79 +31,72 @@ export default async function PracticaPregunta({ params, searchParams }) {
 
     const todas = parametro === "todas";
     const areaId = todas ? null : Number(parametro);
-    if (!todas) {
-        if (!Number.isInteger(areaId)) notFound();
-        const area = await prisma.area.findUnique({
-            where: { id: areaId },
-            select: { id: true },
-        });
-        if (!area) notFound();
-    }
-
-    const resumen = await resumenHoy(usuarioId);
-    if (resumen.llegoAlLimite) redirect("/practica?limite=1");
+    if (!todas && !Number.isInteger(areaId)) notFound();
 
     const sesionValida = typeof s === "string" && UUID.test(s);
     const sesionPractica = sesionValida ? s : randomUUID();
 
-    const pool = await poolPractica(usuarioId, areaId, sesionPractica);
-    const ids = pool.map((x) => x.id);
+    const [area, resumen, progreso, pregunta] = await Promise.all([
+        todas
+            ? null
+            : prisma.area.findUnique({
+                  where: { id: areaId },
+                  select: { id: true },
+              }),
+        resumenHoy(usuarioId),
+        progresoPractica(usuarioId, areaId, sesionPractica),
+        buscarPreguntaPractica(
+            usuarioId,
+            areaId,
+            sesionPractica,
+            Number(p)
+        ),
+    ]);
 
-    if (ids.length === 0) {
-        const total = await poolTotal(areaId);
-        const yaRespondidas = total.length > 0;
-        return (
-            <main className="mx-auto max-w-xl p-6">
-                <Link
-                    href="/practica"
-                    aria-label="Terminar la práctica"
-                    className="text-gris"
-                >
-                    <X size={26} strokeWidth={3} />
-                </Link>
-                <div className="tarjeta mt-4 text-center">
-                    <p className="font-extrabold">
-                        {yaRespondidas
-                            ? "Ya respondiste todas las preguntas de esta práctica"
-                            : "Todavía no hay preguntas para practicar en esta área."}
-                    </p>
-                    {yaRespondidas && (
-                        <p className="mt-1 text-sm text-gris">
-                            Vuelve al menú para empezar otra práctica.
-                        </p>
-                    )}
-                </div>
-                <Link href="/practica" className="boton boton-ancho mt-4">
-                    Terminar
-                </Link>
-            </main>
-        );
-    }
+    if (!todas && !area) notFound();
+    if (resumen.llegoAlLimite) redirect("/practica?limite=1");
 
-    if (!sesionValida) {
-        const pedida = Number(p);
-        const siguiente = ids.includes(pedida)
-            ? pedida
-            : await siguientePreguntaId(usuarioId, areaId, sesionPractica);
-        if (siguiente === null) redirect("/practica");
-        redirect(
-            "/practica/" +
-                parametro +
-                "?s=" +
-                sesionPractica +
-                "&p=" +
-                siguiente
-        );
-    }
-
-    const pedida = Number(p);
-    if (!ids.includes(pedida)) {
+    if (!pregunta) {
         const siguiente = await siguientePreguntaId(
             usuarioId,
             areaId,
             sesionPractica
         );
-        if (siguiente === null) redirect("/practica");
+        if (siguiente === null) {
+            return (
+                <main className="mx-auto max-w-xl p-6">
+                    <Link
+                        href="/practica"
+                        aria-label="Terminar la práctica"
+                        className="text-gris"
+                    >
+                        <X size={26} strokeWidth={3} />
+                    </Link>
+                    <div className="mt-4">
+                        <BarraProgreso
+                            hechas={progreso.respondidas}
+                            total={progreso.total}
+                            etiqueta="Progreso de la práctica"
+                        />
+                    </div>
+                    <div className="tarjeta text-center">
+                        <p className="font-extrabold">
+                            {progreso.total > 0
+                                ? "Ya respondiste todas las preguntas de esta práctica"
+                                : "Todavía no hay preguntas para practicar en esta área."}
+                        </p>
+                        {progreso.total > 0 && (
+                            <p className="mt-1 text-sm text-gris">
+                                Vuelve al menú para empezar otra práctica.
+                            </p>
+                        )}
+                    </div>
+                    <Link href="/practica" className="boton boton-ancho mt-4">
+                        Terminar
+                    </Link>
+                </main>
+            );
+        }
         redirect(
             "/practica/" +
                 parametro +
@@ -113,11 +107,16 @@ export default async function PracticaPregunta({ params, searchParams }) {
         );
     }
 
-    const pregunta = await prisma.pregunta.findUnique({
-        where: { id: pedida },
-        include: { opciones: { orderBy: { id: "asc" } }, area: true },
-    });
-    if (!pregunta) notFound();
+    if (!sesionValida) {
+        redirect(
+            "/practica/" +
+                parametro +
+                "?s=" +
+                sesionPractica +
+                "&p=" +
+                pregunta.id
+        );
+    }
 
     const estilo = estiloArea(pregunta.area.nombre);
     const Icono = estilo.Icono;
@@ -143,6 +142,12 @@ export default async function PracticaPregunta({ params, searchParams }) {
                 </span>
                 <span className="text-sm font-extrabold text-gris">Práctica libre</span>
             </div>
+
+            <BarraProgreso
+                hechas={progreso.respondidas}
+                total={progreso.total}
+                etiqueta="Progreso de la práctica"
+            />
 
             {partes.instruccion && (
                 <p className="mb-2 text-sm font-extrabold uppercase tracking-wide text-gris">

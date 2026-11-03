@@ -5,18 +5,23 @@ import { exigirSesion } from "../../../../lib/permisos";
 import { prisma } from "../../../../lib/prisma";
 import { estiloArea } from "../../../../lib/areas";
 import RevisionPregunta from "../../../../components/RevisionPregunta";
+import BarraProgreso from "../../../../components/BarraProgreso";
 import {
+    progresoPractica,
     resumenHoy,
     siguientePreguntaId,
 } from "../../../../services/practica";
 import FormularioReporte from "../../../pregunta/[areaId]/formulario-reporte";
+
+const UUID =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async function ResultadoPractica({ params, searchParams }) {
     const sesion = await exigirSesion();
     const usuarioId = Number(sesion.user.id);
 
     const { id } = await params;
-    const { destino } = await searchParams;
+    const { destino, s } = await searchParams;
     const respuestaId = Number(id);
     if (!Number.isInteger(respuestaId)) notFound();
 
@@ -37,7 +42,12 @@ export default async function ResultadoPractica({ params, searchParams }) {
             : "todas";
 
     const areaId = sigue === "todas" ? null : Number(sigue);
-    const [resumen, reporte, siguiente] = await Promise.all([
+    const sesionTexto = String(s ?? "");
+    const sesionPractica = UUID.test(sesionTexto)
+        ? sesionTexto
+        : respuesta.sesion;
+
+    const [resumen, reporte, siguiente, progreso] = await Promise.all([
         resumenHoy(usuarioId),
         prisma.reportePregunta.findUnique({
             where: {
@@ -48,9 +58,10 @@ export default async function ResultadoPractica({ params, searchParams }) {
         siguientePreguntaId(
             usuarioId,
             areaId,
-            respuesta.sesion,
+            sesionPractica,
             respuesta.preguntaId
         ),
+        progresoPractica(usuarioId, areaId, sesionPractica),
     ]);
 
     const enlaceSiguiente =
@@ -58,7 +69,7 @@ export default async function ResultadoPractica({ params, searchParams }) {
             ? null
             : "/practica/" +
               sigue +
-              (respuesta.sesion ? "?s=" + respuesta.sesion + "&p=" : "?p=") +
+              (sesionPractica ? "?s=" + sesionPractica + "&p=" : "?p=") +
               siguiente;
 
     const estilo = estiloArea(respuesta.pregunta.area.nombre);
@@ -83,6 +94,12 @@ export default async function ResultadoPractica({ params, searchParams }) {
                     <Icono size={16} strokeWidth={2.5} /> {respuesta.pregunta.area.nombre}
                 </span>
             </div>
+
+            <BarraProgreso
+                hechas={progreso.respondidas}
+                total={progreso.total}
+                etiqueta="Progreso de la práctica"
+            />
 
             <div
                 className={
@@ -132,6 +149,7 @@ export default async function ResultadoPractica({ params, searchParams }) {
                 {enlaceSiguiente && (
                     <Link
                         href={enlaceSiguiente}
+                        prefetch
                         className={
                             "boton boton-ancho " +
                             (respuesta.acierto ? "boton-acierto" : "boton-rojo")

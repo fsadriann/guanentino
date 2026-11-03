@@ -4,7 +4,10 @@ import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { prisma } from "../../lib/prisma";
 import { exigirSesion } from "../../lib/permisos";
-import { poolPractica, resumenHoy } from "../../services/practica";
+import {
+    buscarPreguntaPractica,
+    resumenHoy,
+} from "../../services/practica";
 
 const UUID =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -28,19 +31,22 @@ export async function responderPractica(formData) {
         redirect("/practica");
     }
 
-    const resumen = await resumenHoy(usuarioId);
-    if (resumen.llegoAlLimite) redirect("/practica?limite=1");
+    const [resumen, pregunta] = await Promise.all([
+        resumenHoy(usuarioId),
+        buscarPreguntaPractica(
+            usuarioId,
+            areaId,
+            sesionPractica,
+            preguntaId
+        ),
+    ]);
 
-    const pool = await poolPractica(usuarioId, areaId, sesionPractica);
-    if (!pool.some((p) => p.id === preguntaId)) {
+    if (resumen.llegoAlLimite) redirect("/practica?limite=1");
+    if (!pregunta) {
         redirect("/practica/" + destino + "?s=" + sesionPractica);
     }
 
-    const pregunta = await prisma.pregunta.findUnique({
-        where: { id: preguntaId },
-        include: { opciones: true },
-    });
-    const opcion = pregunta?.opciones.find((o) => o.id === opcionId);
+    const opcion = pregunta.opciones.find((o) => o.id === opcionId);
     if (!opcion) redirect("/practica/" + destino + "?s=" + sesionPractica);
 
     const registro = await prisma.respuestaPractica.create({
@@ -53,5 +59,12 @@ export async function responderPractica(formData) {
         },
     });
 
-    redirect("/practica/respuesta/" + registro.id + "?destino=" + destino);
+    redirect(
+        "/practica/respuesta/" +
+            registro.id +
+            "?destino=" +
+            destino +
+            "&s=" +
+            sesionPractica
+    );
 }
