@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Shuffle } from "lucide-react";
+import { Shuffle, Timer } from "lucide-react";
 import { exigirSesion } from "../../../lib/permisos";
 import { prisma } from "../../../lib/prisma";
 import { estiloArea } from "../../../lib/areas";
@@ -66,6 +66,15 @@ export default async function Practica({ searchParams }) {
                 </div>
             ) : (
                 <div className="animar-lista flex flex-col gap-3">
+                    <Link href="/practica/simulacro" className="tarjeta flex items-center gap-4">
+                        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-b-4 border-black/25 bg-relleno-azul text-white">
+                            <Timer size={26} strokeWidth={2.5} />
+                        </span>
+                        <span>
+                            <span className="block text-lg font-extrabold">Simulacro</span>
+                            <span className="text-sm text-gris">Con cronómetro, como en el examen</span>
+                        </span>
+                    </Link>
                     <Link href="/practica/todas" className="tarjeta flex items-center gap-4">
                         <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-b-4 border-black/25 bg-relleno-primario text-white">
                             <Shuffle size={26} strokeWidth={2.5} />

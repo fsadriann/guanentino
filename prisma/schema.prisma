@@ -14,45 +14,47 @@ enum Rol {
 }
 
 model Usuario {
-  id         Int         @id @default(autoincrement())
-  usuario    String      @unique
-  nombre     String
-  apellido   String
-  correo     String      @unique
-  clave      String
-  colegio    String?
-  rol        Rol         @default(ESTUDIANTE)
-  creadoEn   DateTime    @default(now())
-  respuestas Respuesta[]
-  debeCambiarClave Boolean @default(false)
-  avatarIcono     String?
-  avatarColor     String  @default("azul")
-  ocultoEnRanking Boolean @default(false)
-  reportes        ReportePregunta[]
-  practicas       RespuestaPractica[]
+  id               Int                 @id @default(autoincrement())
+  usuario          String              @unique
+  nombre           String
+  apellido         String
+  correo           String              @unique
+  clave            String
+  colegio          String?
+  rol              Rol                 @default(ESTUDIANTE)
+  creadoEn         DateTime            @default(now())
+  respuestas       Respuesta[]
+  debeCambiarClave Boolean             @default(false)
+  avatarIcono      String?
+  avatarColor      String              @default("azul")
+  ocultoEnRanking  Boolean             @default(false)
+  reportes         ReportePregunta[]
+  practicas        RespuestaPractica[]
+  simulacros       Simulacro[]
 }
 
 model Area {
-  id        Int        @id @default(autoincrement())
-  nombre    String     @unique
-  preguntas Pregunta[]
-  delDia    PreguntaDelDia[]
+  id         Int              @id @default(autoincrement())
+  nombre     String           @unique
+  preguntas  Pregunta[]
+  delDia     PreguntaDelDia[]
 }
 
 model Pregunta {
-  id          Int              @id @default(autoincrement())
-  enunciado   String
-  explicacion String
-  areaId      Int
-  area        Area             @relation(fields: [areaId], references: [id])
-  opciones    Opcion[]
-  respuestas  Respuesta[]
-  delDia      PreguntaDelDia[]
-  reportes    ReportePregunta[]
-  imagenId    Int?
-  imagenAlt   String?
-  imagen      Imagen? @relation(fields: [imagenId], references: [id])
-  practicas   RespuestaPractica[]
+  id           Int                 @id @default(autoincrement())
+  enunciado    String
+  explicacion  String
+  areaId       Int
+  area         Area                @relation(fields: [areaId], references: [id])
+  opciones     Opcion[]
+  respuestas   Respuesta[]
+  delDia       PreguntaDelDia[]
+  reportes     ReportePregunta[]
+  imagenId     Int?
+  imagenAlt    String?
+  imagen       Imagen?             @relation(fields: [imagenId], references: [id])
+  practicas    RespuestaPractica[]
+  enSimulacros SimulacroPregunta[]
 
   @@index([areaId])
 }
@@ -152,4 +154,29 @@ model RespuestaPractica {
   @@index([usuarioId, fecha])
   @@index([usuarioId, preguntaId])
   @@index([usuarioId, sesion])
+}
+
+model Simulacro {
+  id        Int                 @id @default(autoincrement())
+  usuarioId Int
+  inicio    DateTime            @default(now())
+  fin       DateTime
+  terminado DateTime?
+  usuario   Usuario             @relation(fields: [usuarioId], references: [id])
+  preguntas SimulacroPregunta[]
+
+  @@index([usuarioId, inicio])
+}
+
+model SimulacroPregunta {
+  id          Int       @id @default(autoincrement())
+  simulacroId Int
+  preguntaId  Int
+  orden       Int
+  opcionId    Int?
+  simulacro   Simulacro @relation(fields: [simulacroId], references: [id], onDelete: Cascade)
+  pregunta    Pregunta  @relation(fields: [preguntaId], references: [id])
+
+  @@unique([simulacroId, preguntaId])
+  @@index([simulacroId, orden])
 }

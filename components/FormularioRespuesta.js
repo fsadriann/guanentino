@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 
-function Contenido({ opciones, seleccion, setSeleccion }) {
+function Contenido({ opciones, seleccion, setSeleccion, textoBoton }) {
     const { pending } = useFormStatus();
 
     return (
@@ -44,14 +44,19 @@ function Contenido({ opciones, seleccion, setSeleccion }) {
                     disabled={seleccion === null || pending}
                     className="boton boton-ancho"
                 >
-                    {pending ? "Comprobando..." : "Comprobar"}
+                    {pending ? "Comprobando..." : textoBoton}
                 </button>
             </div>
         </>
     );
 }
 
-export default function FormularioRespuesta({ accion, campos = {}, opciones }) {
+export default function FormularioRespuesta({
+    accion,
+    campos = {},
+    opciones,
+    textoBoton = "Comprobar",
+}) {
     const [seleccion, setSeleccion] = useState(null);
 
     return (
@@ -63,6 +68,7 @@ export default function FormularioRespuesta({ accion, campos = {}, opciones }) {
                 opciones={opciones}
                 seleccion={seleccion}
                 setSeleccion={setSeleccion}
+                textoBoton={textoBoton}
             />
         </form>
     );
