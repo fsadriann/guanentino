@@ -1,9 +1,31 @@
 import { prisma } from "../lib/prisma";
 
+function rangoSemanaBogota() {
+    const ahora = new Date();
+    const textoHoy = ahora.toLocaleDateString("en-CA", {
+        timeZone: "America/Bogota",
+    });
+    const [ano, mes, dia] = textoHoy.split("-").map(Number);
+    const hoy = new Date(Date.UTC(ano, mes - 1, dia));
+    const diaSemana = hoy.getUTCDay();
+    const diasDesdeLunes = (diaSemana + 6) % 7;
+    const inicio = new Date(
+        Date.UTC(ano, mes - 1, dia - diasDesdeLunes, 5),
+    );
+    const fin = new Date(inicio);
+    fin.setUTCDate(inicio.getUTCDate() + 7);
+
+    return { inicio, fin };
+}
+
 export async function topRanking(limite = 10) {
+    const { inicio, fin } = rangoSemanaBogota();
     const grupos = await prisma.respuesta.groupBy({
         by: ["usuarioId"],
-        where: { usuario: { ocultoEnRanking: false } },
+        where: {
+            fecha: { gte: inicio, lt: fin },
+            usuario: { ocultoEnRanking: false },
+        },
         _sum: { puntaje: true },
         _count: { _all: true },
         orderBy: { _sum: { puntaje: "desc" } },
@@ -30,9 +52,13 @@ export async function topRanking(limite = 10) {
 }
 
 export async function posicionUsuario(usuarioId) {
+    const { inicio, fin } = rangoSemanaBogota();
     const grupos = await prisma.respuesta.groupBy({
         by: ["usuarioId"],
-        where: { usuario: { ocultoEnRanking: false } },
+        where: {
+            fecha: { gte: inicio, lt: fin },
+            usuario: { ocultoEnRanking: false },
+        },
         _sum: { puntaje: true },
         orderBy: { _sum: { puntaje: "desc" } },
     });
