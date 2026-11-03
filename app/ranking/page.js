@@ -1,18 +1,40 @@
 import { Medal, Star } from "lucide-react";
 import Avatar from "../../components/Avatar";
 import { exigirSesion } from "../../lib/permisos";
-import { topRanking } from "../../services/ranking";
+import { posicionUsuario, topRanking } from "../../services/ranking";
 
 const coloresMedalla = ["text-amarillo", "text-gris", "text-naranja"];
 
 export default async function Ranking() {
     const sesion = await exigirSesion();
-    const filas = await topRanking(10);
+    const usuarioId = Number(sesion.user.id);
+    const [filas, miPosicion] = await Promise.all([
+        topRanking(10),
+        posicionUsuario(usuarioId),
+    ]);
+    const estaEnTop = filas.some((fila) => fila.id === usuarioId);
 
     return (
         <main className="mx-auto max-w-xl p-6">
             <h1 className="text-2xl font-extrabold">Ranking</h1>
             <p className="mb-5 text-gris">Los 10 estudiantes con más puntos</p>
+
+            {miPosicion && !estaEnTop && (
+                <div className="tarjeta mb-6 flex items-center gap-3 border-azul bg-azul-claro">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-azul font-extrabold text-white">
+                        {miPosicion.posicion}
+                    </span>
+                    <span className="flex-1">
+                        <span className="block font-extrabold">Tu posición</span>
+                        <span className="text-sm text-gris">
+                            Sigue practicando para subir en el ranking.
+                        </span>
+                    </span>
+                    <span className="font-extrabold text-azul-oscuro">
+                        {miPosicion.puntos} puntos
+                    </span>
+                </div>
+            )}
 
             {filas.length === 0 ? (
                 <div className="tarjeta text-center text-gris">

@@ -28,3 +28,19 @@ export async function topRanking(limite = 10) {
         };
     });
 }
+
+export async function posicionUsuario(usuarioId) {
+    const grupos = await prisma.respuesta.groupBy({
+        by: ["usuarioId"],
+        where: { usuario: { ocultoEnRanking: false } },
+        _sum: { puntaje: true },
+        orderBy: { _sum: { puntaje: "desc" } },
+    });
+    const indice = grupos.findIndex((g) => g.usuarioId === usuarioId);
+    if (indice === -1) return null;
+
+    return {
+        posicion: indice + 1,
+        puntos: grupos[indice]._sum.puntaje ?? 0,
+    };
+}

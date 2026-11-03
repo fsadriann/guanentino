@@ -59,7 +59,7 @@ export default async function Perfil() {
     ];
 
     return (
-        <main className="mx-auto max-w-xl p-6">
+        <main className="animar-entrada mx-auto max-w-xl p-6">
             <div className="mb-6 flex items-center gap-4">
                 <Avatar
                     icono={usuario.avatarIcono}
@@ -83,7 +83,7 @@ export default async function Perfil() {
                 </div>
             </div>
 
-            <div className="mb-6 grid grid-cols-2 gap-3">
+            <div className="animar-lista mb-6 grid grid-cols-2 gap-3">
                 {tarjetas.map((t) => (
                     <div key={t.titulo} className="tarjeta">
                         <t.Icono

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Check, X } from "lucide-react";
+import { Check, CheckCircle2, X, XCircle } from "lucide-react";
 import { exigirSesion } from "../../../lib/permisos";
 import { prisma } from "../../../lib/prisma";
 import { estiloArea } from "../../../lib/areas";
@@ -63,7 +63,7 @@ export default async function Pregunta({ params }) {
     const partes = separarEnunciado(pregunta.enunciado);
 
     return (
-        <main className="mx-auto max-w-xl p-6">
+        <main className="animar-entrada mx-auto max-w-xl p-6">
             <div className="mb-6 flex items-center gap-3">
                 <Link
                     href="/pregunta"
@@ -152,23 +152,30 @@ export default async function Pregunta({ params }) {
 
                     <div
                         className={
-                            "animar-entrada mt-6 rounded-2xl p-5 " +
+                            "animar-entrada mt-6 flex items-start gap-3 rounded-2xl p-5 " +
                             (respuesta.acierto
                                 ? "bg-acierto-claro text-acierto-oscuro"
                                 : "bg-rojo-claro text-rojo-oscuro")
                         }
                     >
-                        <p className="text-xl font-extrabold">
-                            {respuesta.acierto ? "¡Correcto!" : "Incorrecto"}
-                        </p>
-                        <p className="mb-2 font-extrabold">
-                            {respuesta.acierto
-                                ? "Ganaste " + respuesta.puntaje + " puntos"
-                                : "Esta vez no sumaste puntos"}
-                        </p>
-                        <p>
-                            <Texto>{pregunta.explicacion}</Texto>
-                        </p>
+                        {respuesta.acierto ? (
+                            <CheckCircle2 size={26} strokeWidth={2.5} className="mt-0.5 shrink-0" />
+                        ) : (
+                            <XCircle size={26} strokeWidth={2.5} className="mt-0.5 shrink-0" />
+                        )}
+                        <div>
+                            <p className="text-xl font-extrabold">
+                                {respuesta.acierto ? "¡Correcto!" : "Incorrecto"}
+                            </p>
+                            <p className="mb-2 font-extrabold">
+                                {respuesta.acierto
+                                    ? "Ganaste " + respuesta.puntaje + " puntos"
+                                    : "Esta vez no sumaste puntos"}
+                            </p>
+                            <p>
+                                <Texto>{pregunta.explicacion}</Texto>
+                            </p>
+                        </div>
                     </div>
 
                     <div className="mt-4">
