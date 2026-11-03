@@ -6,6 +6,8 @@ import { estiloArea } from "../../lib/areas";
 import { separarEnunciado } from "../../lib/enunciado";
 import { textoPlano } from "../../lib/matematicas";
 import RevisionPregunta from "../../components/RevisionPregunta";
+import BarraProgreso from "../../components/BarraProgreso";
+import { preguntaDelDia } from "../../services/preguntas";
 
 function formatearFecha(fecha) {
     return new Date(fecha).toLocaleDateString("es-CO", {
@@ -30,6 +32,13 @@ export default async function Progreso({ searchParams }) {
             select: { acierto: true, pregunta: { select: { areaId: true } } },
         }),
     ]);
+    const preguntasDelDia = await Promise.all(areas.map((a) => preguntaDelDia(a.id)));
+    const idsDelDia = preguntasDelDia.filter(Boolean).map((p) => p.id);
+    const respuestasDeHoy = idsDelDia.length
+        ? await prisma.respuesta.count({
+            where: { usuarioId, preguntaId: { in: idsDelDia } },
+        })
+        : 0;
 
     const total = respuestas.length;
     const aciertosTotal = respuestas.filter((r) => r.acierto).length;
@@ -84,6 +93,21 @@ export default async function Progreso({ searchParams }) {
         <main className="mx-auto max-w-xl p-6">
             <h1 className="text-2xl font-extrabold">Mi progreso</h1>
             <p className="mb-5 text-gris">Mira cómo vas en cada área</p>
+
+            {idsDelDia.length > 0 && (
+                <div className="tarjeta mb-6">
+                    <BarraProgreso
+                        hechas={respuestasDeHoy}
+                        total={idsDelDia.length}
+                        etiqueta="Meta de hoy"
+                    />
+                    <p className="text-sm text-gris">
+                        {respuestasDeHoy === idsDelDia.length
+                            ? "Completaste todas las áreas de hoy."
+                            : "Responde una pregunta en cada área para completar tu meta."}
+                    </p>
+                </div>
+            )}
 
             {total === 0 ? (
                 <div className="tarjeta text-center">

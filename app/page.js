@@ -26,17 +26,17 @@ const PASOS = [
   [
     BookOpenCheck,
     "Elige un área",
-    "Lectura, matemáticas, sociales, ciencias o inglés. Cada día hay una pregunta nueva en cada una.",
+    "Escoge entre lectura, matemáticas, sociales, inglés y ciencias o incluso todas juntas para un repaso más completo.",
   ],
   [
     CheckCircle2,
     "Responde y aprende",
-    "Al comprobar sabes si acertaste y entiendes el porqué con la explicación de cada pregunta.",
+    "Cada día una pregunta nueva de cada área. Al comprobar sabes si acertaste y entiendes el porqué con la explicación de cada pregunta.",
   ],
   [
     TrendingUp,
     "Mide tu progreso",
-    "Suma puntos, mantén tu racha de días y revisa cómo avanzas en cada área.",
+    "Suma puntos, mantén tu racha diaria y haz un seguimiento de tu avance en cada área.",
   ],
 ];
 
@@ -50,11 +50,11 @@ const AREAS = [
 
 const FUNCIONES = [
   [Flame, "Racha diaria", "Practica un poco cada día y no rompas tu racha."],
-  [Trophy, "Ranking", "Compite con tus compañeros. Si prefieres, puedes ocultarte."],
-  [TrendingUp, "Tu progreso", "Mira en qué área vas mejor y repasa las preguntas que fallaste."],
+  [Trophy, "Ranking", "Compite con tus compañeros en el top semanal."],
+  [TrendingUp, "Tu progreso", "Realiza un seguimiento de tu aprendizaje y repasa donde fallaste."],
   [Dumbbell, "Práctica libre", "Repasa preguntas de días anteriores cuando quieras."],
-  [Sigma, "Fórmulas e imágenes", "Preguntas de matemáticas y ciencias con fórmulas bien escritas y con imágenes."],
-  [Smartphone, "App en tu teléfono", "Instálala y ábrela como cualquier app, en modo claro o en modo oscuro."],
+  [Sigma, "Fórmulas e imágenes", "Preguntas de matemáticas y ciencias con fórmulas, gráficos e imágenes."],
+  [Smartphone, "App en tu teléfono", "Fácil de instalar y utilizar como cualquier app."],
 ];
 
 export default async function Inicio({ searchParams }) {
@@ -91,12 +91,11 @@ export default async function Inicio({ searchParams }) {
               Guanentino Responda
             </span>
             <h1 className="mb-4 text-4xl font-extrabold leading-tight md:text-5xl">
-              Practica para el Saber 11 con{" "}
+              Practica para las Pruebas Saber 11 con{" "}
               <span className="text-primario">una pregunta al día</span>
             </h1>
             <p className="mb-8 text-lg text-gris">
-              Responde, aprende con la explicación al instante y sube en el
-              ranking. Funciona en tu celular y se puede instalar como una app.
+              Responde y aprende de una forma fácil y entretenida.
             </p>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-center md:justify-start">
@@ -153,10 +152,10 @@ export default async function Inicio({ searchParams }) {
       <section id="areas" className="landing-seccion mx-auto max-w-5xl scroll-mt-14 px-6 py-16">
         <Revelar>
           <h2 className="mb-2 text-center text-3xl font-extrabold">
-            Las cinco áreas del examen
+            Practica las cinco áreas del examen
           </h2>
           <p className="mb-10 text-center text-gris">
-            Una pregunta nueva cada día en cada una.
+            Una pregunta nueva cada día.
           </p>
         </Revelar>
 
