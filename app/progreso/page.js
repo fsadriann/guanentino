@@ -161,12 +161,20 @@ export default async function Progreso() {
                         strokeWidth={2.5}
                         className="mt-0.5 shrink-0 text-amarillo-oscuro"
                     />
-                    <p>
-                        Por ahora tu área más difícil es{" "}
-                        <span className="font-extrabold">{masDebil.area.nombre}</span>{" "}
-                        con {masDebil.porcentaje}% de aciertos. Vale la pena practicar
-                        un poco más esa área.
-                    </p>
+                    <div className="flex-1">
+                        <p>
+                            Por ahora tu área más difícil es{" "}
+                            <span className="font-extrabold">{masDebil.area.nombre}</span>{" "}
+                            con {masDebil.porcentaje}% de aciertos. Vale la pena practicar
+                            un poco más esa área.
+                        </p>
+                        <Link
+                            href={"/practica/" + masDebil.area.id}
+                            className="mt-2 inline-block text-sm font-extrabold text-azul hover:underline"
+                        >
+                            Practicar {masDebil.area.nombre}
+                        </Link>
+                    </div>
                 </div>
             )}
 
