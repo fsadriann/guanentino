@@ -9,17 +9,11 @@ export default function Footer() {
   const pathname = usePathname();
 
   if (pathname !== "/") {
-    return (
-      <footer className="border-t-2 border-borde p-4 pb-24 text-center text-sm text-gris md:pb-4">
-        <Link href="/privacidad" className="font-bold underline">
-          Política de privacidad
-        </Link>
-      </footer>
-    );
+    return null;
   }
 
   return (
-    <footer className="border-t-2 border-borde bg-superficie pb-20 md:pb-6">
+    <footer className="border-t-2 border-borde bg-superficie py-8 md:py-6">
       <div className="mx-auto grid max-w-5xl gap-7 px-6 py-8 sm:grid-cols-2 sm:py-10 lg:grid-cols-[1.4fr_1fr_1fr]">
         <div>
           <Link

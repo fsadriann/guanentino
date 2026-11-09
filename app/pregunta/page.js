@@ -25,14 +25,25 @@ export default async function Preguntas() {
 
     return (
         <main className="mx-auto max-w-xl p-6">
-            <h1 className="text-2xl font-extrabold">Preguntas del día</h1>
-            <p className="mb-5 text-gris">Elige un área y responde</p>
+            <h1 className="mb-4 text-2xl font-extrabold">Preguntas del día</h1>
 
             <BarraProgreso
                 hechas={hechas}
                 total={disponibles}
                 etiqueta="Progreso de hoy"
             />
+
+            <Link href="/practica" className="tarjeta mb-6 flex items-center gap-4">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-azul-claro text-azul">
+                    <Dumbbell size={24} strokeWidth={2.5} />
+                </span>
+                <span className="flex-1">
+                    <span className="block text-lg font-extrabold">Práctica libre</span>
+                    <span className="text-sm text-gris">
+                        Repasa preguntas o haz simulacros
+                    </span>
+                </span>
+            </Link>
 
             {terminado && (
                 <div className="mensaje-ok animar-entrada mb-6 flex items-center gap-3">
@@ -108,17 +119,6 @@ export default async function Preguntas() {
                     );
                 })}
             </div>
-            <Link href="/practica" className="tarjeta mt-6 flex items-center gap-4">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-azul-claro text-azul">
-                    <Dumbbell size={24} strokeWidth={2.5} />
-                </span>
-                <span>
-                    <span className="block text-lg font-extrabold">Práctica libre</span>
-                    <span className="text-sm text-gris">
-                        Repasa preguntas de días anteriores
-                    </span>
-                </span>
-            </Link>
         </main>
     );
 }

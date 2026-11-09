@@ -18,37 +18,34 @@ export default async function Simulacro() {
     );
 
     return (
-        <main className="mx-auto max-w-xl p-6">
-            <EnlaceVolver href="/practica">Práctica libre</EnlaceVolver>
-            <h1 className="mt-3 text-2xl font-extrabold">Simulacro</h1>
-            <p className="mb-5 text-gris">
-                Practica como en el examen, con preguntas de todas las áreas y un
-                cronómetro.
-            </p>
+        <main className="mx-auto flex max-w-xl flex-col p-6 pb-0 [min-height:calc(100dvh-5rem)] md:[min-height:calc(100dvh-7rem)]">
+            <div className="flex-1">
+                <EnlaceVolver href="/practica">Práctica libre</EnlaceVolver>
+                <h1 className="mb-4 mt-3 text-2xl font-extrabold">Simulacro</h1>
 
-            {cantidad === 0 ? (
-                <div className="tarjeta text-center text-gris">
-                    Todavía no hay preguntas para un simulacro. Cada día se suman
-                    las preguntas del día anterior, así que vuelve mañana.
-                </div>
-            ) : (
-                <>
-                    <ul className="tarjeta mb-6 flex flex-col gap-2 font-extrabold">
+                {cantidad === 0 ? (
+                    <div className="tarjeta text-center text-gris">
+                        Todavía no hay preguntas para un simulacro. Cada día se suman
+                        las preguntas del día anterior, así que vuelve mañana.
+                    </div>
+                ) : (
+                    <ul className="tarjeta flex flex-col gap-2 font-extrabold">
                         <li>{cantidad} preguntas de todas las áreas</li>
                         <li>{minutos} minutos en total</li>
                         <li>Verás las respuestas al terminar</li>
                         <li>No suma puntos al ranking</li>
                     </ul>
+                )}
+            </div>
 
-                    <form action={iniciarSimulacro}>
+            {cantidad > 0 && (
+                <form action={iniciarSimulacro}>
+                    <div className="-mx-6 mt-4 border-t-2 border-borde bg-fondo p-4">
                         <button type="submit" className="boton boton-ancho">
                             Empezar
                         </button>
-                    </form>
-                    <p className="mt-3 text-center text-sm text-gris">
-                        El tiempo empieza al pulsar Empezar.
-                    </p>
-                </>
+                    </div>
+                </form>
             )}
         </main>
     );

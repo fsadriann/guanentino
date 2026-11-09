@@ -39,12 +39,7 @@ export default async function Practica({ searchParams }) {
     return (
         <main className="mx-auto max-w-xl p-6">
             <EnlaceVolver href="/pregunta">Preguntas del día</EnlaceVolver>
-            <h1 className="mt-3 text-2xl font-extrabold">Práctica libre</h1>
-            <p className="mb-5 text-gris">
-                Repasa preguntas de días anteriores. La práctica no suma puntos al
-                ranking. Primero aparecen las que aún no has respondido y luego las
-                que has fallado.
-            </p>
+            <h1 className="mb-4 mt-3 text-2xl font-extrabold">Práctica libre</h1>
 
             {(limite || resumen.llegoAlLimite) && (
                 <p className="mensaje-error mb-4">

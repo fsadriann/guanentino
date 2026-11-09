@@ -45,7 +45,7 @@ export default async function SimulacroPagina({ params }) {
 
     return (
         <main className="mx-auto max-w-xl p-6">
-            <div className="mb-6 flex items-center gap-3">
+            <div className="mb-4 flex items-center gap-3">
                 <Link
                     href="/practica"
                     aria-label="Salir del simulacro. El tiempo sigue corriendo"
@@ -55,11 +55,13 @@ export default async function SimulacroPagina({ params }) {
                 </Link>
                 <span
                     className={
-                        "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-extrabold text-white " +
-                        estilo.fondo
+                        "inline-flex items-center gap-1.5 rounded-full py-1 text-sm font-extrabold text-white " +
+                        estilo.fondo +
+                        " px-2 sm:px-3"
                     }
                 >
-                    <Icono size={16} strokeWidth={2.5} /> {actual.area.nombre}
+                    <Icono size={16} strokeWidth={2.5} />
+                    <span className="hidden sm:inline">{actual.area.nombre}</span>
                 </span>
                 <span className="text-sm font-extrabold text-gris">Simulacro</span>
                 <CronometroSimulacro

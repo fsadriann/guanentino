@@ -65,6 +65,13 @@ export default async function ResultadoSimulacro({ params }) {
                 ? "Buen intento"
                 : "Sigue practicando";
 
+    const bannerClase =
+        porcentaje >= 80
+            ? "bg-acierto-claro text-acierto-oscuro"
+            : porcentaje >= 50
+              ? "bg-amarillo/20 text-amarillo-oscuro"
+              : "bg-rojo-claro text-rojo-oscuro";
+
     return (
         <main className="mx-auto max-w-xl p-6">
             <div className="mb-6 flex items-center gap-3">
@@ -78,7 +85,7 @@ export default async function ResultadoSimulacro({ params }) {
                 <span className="text-sm font-extrabold text-gris">Simulacro</span>
             </div>
 
-            <div className="animar-entrada mb-4 rounded-2xl bg-primario-claro p-5 text-center text-primario-oscuro">
+            <div className={"animar-entrada mb-4 rounded-2xl p-5 text-center " + bannerClase}>
                 <p className="text-xl font-extrabold">{mensaje}</p>
                 <p className="text-5xl font-extrabold">{porcentaje}%</p>
                 <p className="font-extrabold">
@@ -106,8 +113,7 @@ export default async function ResultadoSimulacro({ params }) {
             </div>
 
             <p className="mt-4 text-center text-sm font-extrabold text-gris">
-                Usaste {duracion(usado)} de {minutos} minutos. El simulacro no suma
-                puntos al ranking.
+                Tiempo: {duracion(usado)} de {minutos} minutos
             </p>
 
             <div className="tarjeta mt-4">
@@ -166,9 +172,14 @@ export default async function ResultadoSimulacro({ params }) {
                 <Link href="/practica/simulacro" className="boton boton-azul boton-ancho">
                     Hacer otro simulacro
                 </Link>
-                <Link href="/practica" className="boton boton-secundario boton-ancho">
-                    Terminar
-                </Link>
+                <div className="grid grid-cols-2 gap-2">
+                    <Link href="/progreso" className="boton boton-secundario boton-ancho">
+                        Ver progreso
+                    </Link>
+                    <Link href="/practica" className="boton boton-secundario boton-ancho">
+                        Terminar
+                    </Link>
+                </div>
             </div>
         </main>
     );

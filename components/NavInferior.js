@@ -15,7 +15,7 @@ const iconos = {
 export default function NavInferior({ enlaces }) {
     const ruta = usePathname();
 
-    if (/^\/(pregunta\/\d+|practica\/)/.test(ruta)) return null;
+    if (/^\/(pregunta\/\d+|practica)/.test(ruta)) return null;
 
     return (
         <nav className="fixed inset-x-0 bottom-0 z-10 flex min-h-16 border-t-2 border-borde bg-fondo pb-[env(safe-area-inset-bottom)] md:hidden">
@@ -30,8 +30,8 @@ export default function NavInferior({ enlaces }) {
                         aria-current={activo ? "page" : undefined}
                         title={texto}
                         className={
-                            "flex flex-1 items-center justify-center py-3 text-gris transition-colors duration-200 " +
-                            (activo ? "text-azul" : "hover:text-azul")
+                            "flex flex-1 items-center justify-center py-3 transition-colors duration-200 " +
+                            (activo ? "text-azul" : "nav-icono-inactivo hover:text-azul")
                         }
                     >
                         <span
@@ -42,7 +42,7 @@ export default function NavInferior({ enlaces }) {
                                     : "border-transparent")
                             }
                         >
-                            {Icono && <Icono size={22} strokeWidth={2.5} />}
+                            {Icono && <Icono size={22} strokeWidth={activo ? 2.5 : 2} />}
                         </span>
                         <span className="sr-only">{texto}</span>
                     </Link>

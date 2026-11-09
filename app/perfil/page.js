@@ -7,6 +7,7 @@ import { exigirSesion } from "../../lib/permisos";
 import { prisma } from "../../lib/prisma";
 import { estadisticasUsuario } from "../../services/estadisticas";
 import CerrarSesion from "../../components/CerrarSesion";
+import BotonTutorial from "../../components/BotonTutorial";
 
 async function cerrarSesion() {
     "use server";
@@ -106,6 +107,7 @@ export default async function Perfil() {
                         Panel del docente
                     </Link>
                 )}
+                <BotonTutorial />
                 <Link
                     href="/perfil/configuracion"
                     className="boton boton-secundario boton-ancho gap-2"

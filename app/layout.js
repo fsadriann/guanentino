@@ -3,6 +3,7 @@ import "./globals.css";
 import "katex/dist/katex.min.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import TutorialModal from "../components/TutorialModal";
 
 const nunito = Nunito({
   variable: "--font-nunito",
@@ -37,8 +38,9 @@ export default function RootLayout({ children }) {
       </head>
       <body className="flex min-h-full flex-col">
         <Navbar />
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 pb-24 md:pb-8">{children}</div>
         <Footer />
+        <TutorialModal />
       </body>
     </html>
   );

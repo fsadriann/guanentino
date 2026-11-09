@@ -17,8 +17,7 @@ export default async function Ranking() {
 
     return (
         <main className="animar-entrada mx-auto max-w-xl p-6">
-            <h1 className="text-2xl font-extrabold">Ranking</h1>
-            <p className="mb-5 text-gris">Los 10 estudiantes con más puntos esta semana</p>
+            <h1 className="mb-4 text-2xl font-extrabold">Ranking</h1>
 
             {miPosicion && !estaEnTop && (
                 <div className="animar-entrada tarjeta mb-6 flex items-center gap-3 border-azul bg-azul-claro">

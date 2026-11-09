@@ -480,6 +480,16 @@
 }
 
 @layer components {
+  /* Iconos inactivos del nav inferior: más suaves en modo claro */
+  .nav-icono-inactivo {
+    color: #a0a0b8;
+  }
+  :root[data-tema="oscuro"] .nav-icono-inactivo {
+    color: var(--c-gris);
+  }
+}
+
+@layer components {
   .interruptor-ui {
     display: flex;
     align-items: center;

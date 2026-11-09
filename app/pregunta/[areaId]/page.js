@@ -10,6 +10,7 @@ import { preguntaDelDia } from "../../../services/preguntas";
 import Texto from "../../../components/Texto";
 import ImagenPregunta from "../../../components/ImagenPregunta";
 import FormularioRespuesta from "../../../components/FormularioRespuesta";
+import BannerRetroalimentacion from "../../../components/BannerRetroalimentacion";
 import { responder } from "../actions";
 import FormularioReporte from "./formulario-reporte";
 
@@ -150,52 +151,20 @@ export default async function Pregunta({ params }) {
                         })}
                     </div>
 
-                    <div
-                        className={
-                            "animar-entrada mt-6 flex items-start gap-3 rounded-2xl p-5 " +
-                            (respuesta.acierto
-                                ? "bg-acierto-claro text-acierto-oscuro"
-                                : "bg-rojo-claro text-rojo-oscuro")
+                    <BannerRetroalimentacion
+                        acierto={respuesta.acierto}
+                        titulo={respuesta.acierto ? "¡Correcto!" : "Solución:"}
+                        subtitulo={
+                            respuesta.acierto
+                                ? `+${respuesta.puntaje} puntos`
+                                : "Esta vez no sumaste puntos"
                         }
-                    >
-                        {respuesta.acierto ? (
-                            <CheckCircle2 size={26} strokeWidth={2.5} className="mt-0.5 shrink-0" />
-                        ) : (
-                            <XCircle size={26} strokeWidth={2.5} className="mt-0.5 shrink-0" />
-                        )}
-                        <div>
-                            <p className="text-xl font-extrabold">
-                                {respuesta.acierto ? "¡Correcto!" : "Incorrecto"}
-                            </p>
-                            <p className="mb-2 font-extrabold">
-                                {respuesta.acierto
-                                    ? "Ganaste " + respuesta.puntaje + " puntos"
-                                    : "Esta vez no sumaste puntos"}
-                            </p>
-                            <p>
-                                <Texto>{pregunta.explicacion}</Texto>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="mt-4">
-                        <FormularioReporte
-                            preguntaId={pregunta.id}
-                            yaReportado={Boolean(reporte)}
-                        />
-                    </div>
-
-                    <div className="sticky bottom-0 -mx-6 mt-4 border-t-2 border-borde bg-fondo p-4">
-                        <Link
-                            href="/pregunta"
-                            className={
-                                "boton boton-ancho " +
-                                (respuesta.acierto ? "boton-acierto" : "boton-rojo")
-                            }
-                        >
-                            Continuar
-                        </Link>
-                    </div>
+                        explicacion={pregunta.explicacion}
+                        preguntaId={pregunta.id}
+                        yaReportado={Boolean(reporte)}
+                        textoBoton="Continuar"
+                        enlaceContinuar="/pregunta"
+                    />
                 </div>
             )}
         </main>

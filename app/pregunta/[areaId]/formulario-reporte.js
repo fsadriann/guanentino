@@ -12,17 +12,20 @@ const motivos = [
     ["OTRO", "Otro problema"],
 ];
 
-export default function FormularioReporte({ preguntaId, yaReportado }) {
+export default function FormularioReporte({ preguntaId, yaReportado, compacto = false }) {
     const [abierto, setAbierto] = useState(false);
     const [estado, accion, pendiente] = useActionState(reportarPregunta, null);
     const enviado = yaReportado || Boolean(estado?.ok);
 
     if (enviado && !abierto) {
         return (
-            <p className="flex items-center gap-2 text-sm text-gris">
-                <Flag size={16} strokeWidth={2.5} /> Ya reportaste esta pregunta.
-                ¡Gracias!
-            </p>
+            <span
+                title="Ya reportaste esta pregunta"
+                className="flex items-center gap-1 text-xs font-bold opacity-75"
+            >
+                <Flag size={16} strokeWidth={2.5} />
+                {!compacto && " Ya reportada"}
+            </span>
         );
     }
 
@@ -31,10 +34,16 @@ export default function FormularioReporte({ preguntaId, yaReportado }) {
             <button
                 type="button"
                 onClick={() => setAbierto(true)}
-                className="flex items-center gap-2 text-sm font-extrabold text-gris hover:text-texto"
+                title="Reportar problema"
+                className={
+                    "flex items-center justify-center font-extrabold hover:opacity-100 " +
+                    (compacto
+                        ? "rounded-full p-1.5 text-current opacity-80 hover:bg-black/10"
+                        : "gap-1.5 text-sm text-gris hover:text-texto")
+                }
             >
-                <Flag size={16} strokeWidth={2.5} /> Reportar un problema con esta
-                pregunta
+                <Flag size={compacto ? 20 : 18} strokeWidth={2.5} />
+                {!compacto && " Reportar"}
             </button>
 
             <Hoja

@@ -6,6 +6,7 @@ import { prisma } from "../../../../lib/prisma";
 import { estiloArea } from "../../../../lib/areas";
 import RevisionPregunta from "../../../../components/RevisionPregunta";
 import BarraProgreso from "../../../../components/BarraProgreso";
+import BannerRetroalimentacion from "../../../../components/BannerRetroalimentacion";
 import {
     progresoPractica,
     resumenHoy,
@@ -102,67 +103,33 @@ export default async function ResultadoPractica({ params, searchParams }) {
                 desde={progreso.respondidas - 1}
             />
 
-            <div
-                className={
-                    "animar-entrada mb-6 rounded-2xl p-5 " +
-                    (respuesta.acierto
-                        ? "bg-acierto-claro text-acierto-oscuro"
-                        : "bg-rojo-claro text-rojo-oscuro")
-                }
-            >
-                <p className="text-xl font-extrabold">
-                    {respuesta.acierto ? "¡Correcto!" : "Incorrecto"}
-                </p>
-                <p className="text-sm font-extrabold">
-                    La práctica no suma puntos al ranking
-                </p>
-            </div>
-
             <RevisionPregunta
                 pregunta={respuesta.pregunta}
                 opcionElegidaId={respuesta.opcionId}
             />
-
-            <p className="mt-4 text-center text-sm font-extrabold text-gris">
-                Hoy llevas {resumen.total} de práctica y {resumen.aciertos}{" "}
-                {resumen.aciertos === 1 ? "correcta" : "correctas"}
-            </p>
-
-            <div className="mt-4">
-                <FormularioReporte
-                    preguntaId={respuesta.preguntaId}
-                    yaReportado={Boolean(reporte)}
-                />
-            </div>
 
             {enlaceSiguiente === null && (
                 <div className="tarjeta mt-4 text-center">
                     <p className="font-extrabold">
                         Terminaste las preguntas de esta práctica
                     </p>
-                    <p className="mt-1 text-sm text-gris">
-                        Vuelve al menú para empezar otra.
-                    </p>
                 </div>
             )}
 
-            <div className="sticky bottom-0 -mx-6 mt-4 flex flex-col gap-2 border-t-2 border-borde bg-fondo p-4">
-                {enlaceSiguiente && (
-                    <Link
-                        href={enlaceSiguiente}
-                        prefetch
-                        className={
-                            "boton boton-ancho " +
-                            (respuesta.acierto ? "boton-acierto" : "boton-rojo")
-                        }
-                    >
-                        Siguiente pregunta
-                    </Link>
-                )}
-                <Link href="/practica" className="boton boton-secundario boton-ancho">
-                    Terminar
-                </Link>
-            </div>
+            <BannerRetroalimentacion
+                acierto={respuesta.acierto}
+                titulo={respuesta.acierto ? "¡Correcto!" : "Solución:"}
+                subtitulo={
+                    respuesta.acierto
+                        ? "Excelente trabajo"
+                        : "Revisa la opción correcta"
+                }
+                explicacion={respuesta.pregunta.explicacion}
+                preguntaId={respuesta.preguntaId}
+                yaReportado={Boolean(reporte)}
+                textoBoton={enlaceSiguiente ? "Siguiente pregunta" : "Terminar práctica"}
+                enlaceContinuar={enlaceSiguiente ?? "/practica"}
+            />
         </main>
     );
 }

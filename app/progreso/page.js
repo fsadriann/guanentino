@@ -103,8 +103,7 @@ export default async function Progreso() {
 
     return (
         <main className="mx-auto max-w-xl p-6">
-            <h1 className="text-2xl font-extrabold">Mi progreso</h1>
-            <p className="mb-5 text-gris">Mira cómo vas en cada área</p>
+            <h1 className="mb-4 text-2xl font-extrabold">Mi progreso</h1>
 
             {idsDelDia.length > 0 && (
                 <div className="tarjeta mb-6">
@@ -113,11 +112,6 @@ export default async function Progreso() {
                         total={idsDelDia.length}
                         etiqueta="Meta de hoy"
                     />
-                    <p className="text-sm text-gris">
-                        {respuestasDeHoy === idsDelDia.length
-                            ? "Completaste todas las áreas de hoy."
-                            : "Responde una pregunta en cada área para completar tu meta."}
-                    </p>
                 </div>
             )}
 
@@ -125,7 +119,6 @@ export default async function Progreso() {
                 <div className="mb-3 flex items-center justify-between gap-3">
                     <div>
                         <h2 className="text-lg font-extrabold">Esta semana</h2>
-                        <p className="text-sm text-gris">Tu constancia en los últimos 7 días</p>
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-center">
@@ -136,7 +129,7 @@ export default async function Progreso() {
                         </p>
                     </div>
                     <div className="rounded-xl bg-superficie p-3">
-                        <p className="text-xl font-extrabold text-acierto-oscuro">
+                        <p className="text-xl font-extrabold text-acierto">
                             {porcentajeSemana}%
                         </p>
                         <p className="text-xs font-extrabold uppercase tracking-wide text-gris">
